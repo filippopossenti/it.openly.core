@@ -24,4 +24,9 @@ public class Maps {
 		return mapUtils.merge(contexts);
 	}
 
+	@SafeVarargs
+	public static Map<String, Object> mergeInto(Map<String, Object> destination, Map<String, ?>... contexts) {
+		return mapUtils.mergeInto(destination, contexts);
+	}
+
 }

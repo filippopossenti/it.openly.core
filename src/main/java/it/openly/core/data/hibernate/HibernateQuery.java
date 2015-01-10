@@ -34,7 +34,7 @@ public class HibernateQuery extends AbstractQuery {
 		this.returnedType = returnedType;
 	}
 
-	public Query createQuery() {
+	public Query createQuery(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
 		Query query = null;
 		if (!isNative)
 			query = session.createQuery(getSqlStatement());
@@ -42,15 +42,16 @@ public class HibernateQuery extends AbstractQuery {
 			query = session.createSQLQuery(getSqlStatement());
 		if (returnedType != null)
 			query.setResultTransformer(Transformers.aliasToBean(returnedType));
-		for (String key : getContext().keySet()) {
-			query.setParameter(key, getContext().get(key));
+		Map<String, ?> context = mergeContext(contexts);
+		for (String key : context.keySet()) {
+			query.setParameter(key, context.get(key));
 		}
 		return query;
 	}
 
 	@SuppressWarnings("unchecked")
-	private Object getSingleColumn() {
-		Query query = createQuery();
+	private Object getSingleColumn(Map<String, ?>... contexts) {
+		Query query = createQuery(contexts);
 		Map<String, ?> first = (Map<String, ?>) query.uniqueResult();
 		Set<String> keys = first.keySet();
 		if (keys.size() != 1)
@@ -63,36 +64,36 @@ public class HibernateQuery extends AbstractQuery {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> queryForList() {
-		return createQuery().list();
+	public <T> List<T> queryForList(Map<String, ?>... contexts) {
+		return createQuery(contexts).list();
 	}
 
 	@Override
-	public int queryForInt() {
-		return ((Integer) getSingleColumn()).intValue();
+	public int queryForInt(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return ((Integer) getSingleColumn(contexts)).intValue();
 	}
 
 	@Override
-	public long queryForLong() {
-		return ((Long) getSingleColumn()).longValue();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T queryForObject(Class<T> clazz) {
-		return (T) createQuery().uniqueResult();
-	}
-
-	@Override
-	public int update() {
-		return createQuery().executeUpdate();
+	public long queryForLong(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return ((Long) getSingleColumn(contexts)).longValue();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> void iterate(IRowHandlerCallback<T> callback) {
+	public <T> T queryForObject(Class<T> clazz, Map<String, ?>... contexts) {
+		return (T) createQuery(contexts).uniqueResult();
+	}
+
+	@Override
+	public int update(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return createQuery(contexts).executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> void iterate(IRowHandlerCallback<T> callback, Map<String, ?>... contexts) {
 		long counter = 0;
-		Query query = createQuery();
+		Query query = createQuery(contexts);
 		ScrollableResults results = query.scroll(ScrollMode.FORWARD_ONLY);
 		while (results.next()) {
 			T row = (T) results.get(0);

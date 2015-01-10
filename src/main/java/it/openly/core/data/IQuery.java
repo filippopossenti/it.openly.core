@@ -4,41 +4,49 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A generic runnable query. Implementation may provide additional methods for greater flexibility.
+ * A generic runnable query. Implementation may provide additional methods for
+ * greater flexibility.
+ * 
  * @author Filippo
- *
+ * 
  */
 public interface IQuery {
 
 	/**
 	 * Return the set of parameters used in the query.
+	 * 
 	 * @return
 	 */
 	Map<String, ?> getContext();
+
 	/**
 	 * Returns the pre-processed SQL statement.
+	 * 
 	 * @return
 	 */
 	String getSqlStatement();
 
 	/**
 	 * Returns a list of objects.
+	 * 
+	 * @param contexts
+	 * 
 	 * @return
 	 */
-	<T> List<T> queryForList();
+	<T> List<T> queryForList(@SuppressWarnings("unchecked") Map<String, ?>... contexts);
 
-	int queryForInt();
+	int queryForInt(@SuppressWarnings("unchecked") Map<String, ?>... contexts);
 
-	long queryForLong();
-	
-	<T> T queryForObject(Class<T> clazz);
+	long queryForLong(@SuppressWarnings("unchecked") Map<String, ?>... contexts);
 
-	int update();
-	
+	<T> T queryForObject(Class<T> clazz, @SuppressWarnings("unchecked") Map<String, ?>... contexts);
+
+	int update(@SuppressWarnings("unchecked") Map<String, ?>... contexts);
+
 	/**
-	 * Iterates through records. This method is intended to provide a way
-	 *  to iterate records one at a time instead of loading them all into memory.
+	 * Iterates through records. This method is intended to provide a way to
+	 * iterate records one at a time instead of loading them all into memory.
 	 * Use it if you need to handle a very high number of records.
 	 */
-	<T> void iterate(IRowHandlerCallback<T> callback);
+	<T> void iterate(IRowHandlerCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts);
 }

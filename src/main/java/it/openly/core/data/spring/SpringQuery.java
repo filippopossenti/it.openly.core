@@ -38,20 +38,20 @@ public class SpringQuery extends AbstractQuery {
 		dataSource = value;
 	}
 
-	public void query(DataSource dataSource, RowCallbackHandler callback) {
-		getNamedParameterJdbcTemplate(dataSource).query(getSqlStatement(), getContext(), callback);
+	public void query(DataSource dataSource, RowCallbackHandler callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		getNamedParameterJdbcTemplate(dataSource).query(getSqlStatement(), mergeContext(contexts), callback);
 	}
 
-	public void query(RowCallbackHandler callback) {
-		query(getDataSource(), callback);
+	public void query(RowCallbackHandler callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		query(getDataSource(), callback, contexts);
 	}
 
-	public <T> void execute(DataSource dataSource, PreparedStatementCallback<T> callback) {
-		getNamedParameterJdbcTemplate(dataSource).execute(getSqlStatement(), getContext(), callback);
+	public <T> void execute(DataSource dataSource, PreparedStatementCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		getNamedParameterJdbcTemplate(dataSource).execute(getSqlStatement(), mergeContext(contexts), callback);
 	}
 
-	public <T> void execute(PreparedStatementCallback<T> callback) {
-		execute(callback);
+	public <T> void execute(PreparedStatementCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		execute(getDataSource(), callback, contexts);
 	}
 
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate(DataSource dataSource) {
@@ -63,60 +63,60 @@ public class SpringQuery extends AbstractQuery {
 		return getNamedParameterJdbcTemplate(getDataSource());
 	}
 
-	public List<Map<String, Object>> queryForList(DataSource dataSource) {
-		return getNamedParameterJdbcTemplate(dataSource).queryForList(getSqlStatement(), getContext());
+	public List<Map<String, Object>> queryForList(DataSource dataSource, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return getNamedParameterJdbcTemplate(dataSource).queryForList(getSqlStatement(), mergeContext(contexts));
 	}
 
-	public int queryForInt(DataSource dataSource) {
-		return queryForObject(dataSource, Integer.class);
+	public int queryForInt(DataSource dataSource, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return queryForObject(dataSource, Integer.class, contexts);
 	}
 
-	public long queryForLong(DataSource dataSource) {
-		return queryForObject(dataSource, Long.class);
+	public long queryForLong(DataSource dataSource, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return queryForObject(dataSource, Long.class, contexts);
 	}
 
-	public <T> T queryForObject(DataSource dataSource, Class<T> clazz) {
-		return getNamedParameterJdbcTemplate(dataSource).queryForObject(getSqlStatement(), getContext(), clazz);
+	public <T> T queryForObject(DataSource dataSource, Class<T> clazz, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return getNamedParameterJdbcTemplate(dataSource).queryForObject(getSqlStatement(), mergeContext(contexts), clazz);
 	}
 
-	public Map<String, Object> queryForMap(DataSource dataSource) {
-		return getNamedParameterJdbcTemplate(dataSource).queryForMap(getSqlStatement(), getContext());
+	public Map<String, Object> queryForMap(DataSource dataSource, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return getNamedParameterJdbcTemplate(dataSource).queryForMap(getSqlStatement(), mergeContext(contexts));
 	}
 
-	public int update(DataSource dataSource) {
-		return getNamedParameterJdbcTemplate(dataSource).update(getSqlStatement(), getContext());
+	public int update(DataSource dataSource, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return getNamedParameterJdbcTemplate(dataSource).update(getSqlStatement(), mergeContext(contexts));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> queryForList() {
-		return (List<T>) queryForList(getDataSource());
+	public <T> List<T> queryForList(Map<String, ?>... contexts) {
+		return (List<T>) queryForList(getDataSource(), contexts);
 	}
 
 	@Override
-	public int queryForInt() {
-		return queryForInt(getDataSource());
+	public int queryForInt(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return queryForInt(getDataSource(), contexts);
 	}
 
 	@Override
-	public long queryForLong() {
-		return queryForLong(getDataSource());
+	public long queryForLong(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return queryForLong(getDataSource(), contexts);
 	}
 
 	@Override
-	public <T> T queryForObject(Class<T> clazz) {
-		return queryForObject(getDataSource(), clazz);
+	public <T> T queryForObject(Class<T> clazz, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return queryForObject(getDataSource(), clazz, contexts);
 	}
 
 	@Override
-	public int update() {
-		return update(getDataSource());
+	public int update(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return update(getDataSource(), contexts);
 	}
 
 	@Override
-	public <T> void iterate(IRowHandlerCallback<T> callback) {
+	public <T> void iterate(IRowHandlerCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
 		final IRowHandlerCallback<T> cb = callback;
-		getNamedParameterJdbcTemplate(dataSource).query(getSqlStatement(), getContext(), new RowCallbackHandler() {
+		getNamedParameterJdbcTemplate(dataSource).query(getSqlStatement(), mergeContext(contexts), new RowCallbackHandler() {
 
 			ColumnMapRowMapper mapper = new ColumnMapRowMapper();
 
