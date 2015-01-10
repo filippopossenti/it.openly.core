@@ -14,7 +14,7 @@ import java.util.List;
  * 
  * @author Filippo
  */
-public class ObservableInputStream extends InputStream implements IObservableStream {
+public class ObservableInputStream extends InputStream implements IObservableStream, IStreamWithParent<InputStream> {
 
 	private InputStream sourceStream = null;
 	private long position = 0;
@@ -108,6 +108,11 @@ public class ObservableInputStream extends InputStream implements IObservableStr
 		for (IObserver observer : observers) {
 			observer.update(this, optionalState);
 		}
+	}
+
+	@Override
+	public InputStream getParentStream() {
+		return sourceStream;
 	}
 
 }
