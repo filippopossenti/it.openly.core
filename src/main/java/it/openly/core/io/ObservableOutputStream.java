@@ -27,12 +27,6 @@ public class ObservableOutputStream extends OutputStream implements IObservableS
 	}
 
 	@Override
-	public void write(int b) throws IOException {
-		destStream.write(b);
-		incrementProgress(1);
-	}
-
-	@Override
 	public void close() throws IOException {
 		destStream.close();
 	}
@@ -40,6 +34,12 @@ public class ObservableOutputStream extends OutputStream implements IObservableS
 	@Override
 	public void flush() throws IOException {
 		destStream.flush();
+	}
+	
+	@Override
+	public void write(int b) throws IOException {
+		destStream.write(b);
+		incrementProgress(1);
 	}
 
 	@Override

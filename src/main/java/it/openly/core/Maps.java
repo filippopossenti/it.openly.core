@@ -29,4 +29,8 @@ public class Maps {
 		return mapUtils.mergeInto(destination, contexts);
 	}
 
+	@SafeVarargs
+	public static Map<String, Object> build(Object... keysAndValues) {
+		return mapUtils.build(keysAndValues);
+	}
 }

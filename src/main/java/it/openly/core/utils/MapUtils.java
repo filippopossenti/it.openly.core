@@ -21,4 +21,17 @@ public class MapUtils implements IMapUtils {
 		return destination;
 	}
 
+	public Map<String, Object> build(Object... keysAndValues) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (keysAndValues.length % 2 != 0) {
+			throw new RuntimeException("Arguments must be even. The even-index argument is the key, the odd-index argument is the value.");
+		}
+		for (int i = 0; i < keysAndValues.length; i += 2) {
+			String key = (String) keysAndValues[i];
+			Object value = keysAndValues[i + 1];
+			result.put(key, value);
+		}
+		return result;
+	}
+
 }
