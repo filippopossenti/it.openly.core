@@ -16,6 +16,7 @@ public interface IQueryFactory {
 	 * @param contexts
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	IQuery createQuery(String namedQuery, Map<String, ?>... contexts);
 
 	ITransaction getTransaction();

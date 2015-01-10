@@ -44,6 +44,7 @@ public abstract class AbstractQueryFactory implements IQueryFactory {
 		templateProcessor = value;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public IQuery createQuery(String namedQuery, Map<String, ?>... contexts) {
 		ContextUtils ctx = null;
