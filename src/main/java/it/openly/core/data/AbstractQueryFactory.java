@@ -74,4 +74,35 @@ public abstract class AbstractQueryFactory implements IQueryFactory {
 	protected ContextUtils createPreprocessingContextUtils(Map<String, ?> context) {
 		return new ContextUtils(context);
 	}
+	
+	@Override
+	public <T> List<T> queryForList(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return createQuery(namedQuery, contexts).queryForList(contexts);
+	}
+
+	@Override
+	public int queryForInt(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return createQuery(namedQuery, contexts).queryForInt(contexts);
+	}
+
+	@Override
+	public long queryForLong(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return createQuery(namedQuery, contexts).queryForLong(contexts);
+	}
+
+	@Override
+	public <T> T queryForObject(String namedQuery, Class<T> clazz, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return createQuery(namedQuery, contexts).queryForObject(clazz, contexts);
+	}
+
+	@Override
+	public int update(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return createQuery(namedQuery, contexts).update(contexts);
+	}
+
+	@Override
+	public <T> void iterate(String namedQuery, IRowHandlerCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		createQuery(namedQuery, contexts).iterate(callback, contexts);
+	}
+	
 }

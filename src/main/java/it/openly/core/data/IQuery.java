@@ -25,7 +25,7 @@ public interface IQuery {
 	 * @return
 	 */
 	String getSqlStatement();
-
+	
 	/**
 	 * Returns a list of objects.
 	 * 
@@ -49,4 +49,5 @@ public interface IQuery {
 	 * Use it if you need to handle a very high number of records.
 	 */
 	<T> void iterate(IRowHandlerCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts);
+	
 }
