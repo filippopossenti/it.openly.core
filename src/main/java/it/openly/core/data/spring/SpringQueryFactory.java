@@ -17,6 +17,15 @@ import javax.sql.DataSource;
 public class SpringQueryFactory extends AbstractQueryFactory {
 	private DataSource dataSource = null;
 
+	public SpringQueryFactory() {
+		super();
+	}
+	
+	public SpringQueryFactory(DataSource dataSource) {
+		super();
+		setDataSource(dataSource);
+	}
+	
 	/**
 	 * Gets the datasource used by default when creating new querys.
 	 * 
