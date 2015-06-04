@@ -11,7 +11,8 @@
 		<logback.version>1.1.2</logback.version>
 		<jcloverslf4j.version>1.7.7</jcloverslf4j.version>
 		<slf4j.version>1.7.7</slf4j.version>
-		<spring.version>4.1.1.RELEASE</spring.version>
+		<spring.version>4.1.6.RELEASE</spring.version>
+		<spring.security.version>4.0.1.RELEASE</spring.security.version>
 		<aspectj.version>1.8.4</aspectj.version>
 		<google.guava.version>18.0</google.guava.version>
 		<google.collections.version>1.0</google.collections.version>
@@ -21,6 +22,7 @@
 		<stringtemplate.version>4.0.8</stringtemplate.version>
 		<velocity.version>1.7</velocity.version>
 		<hibernate.version>4.3.7.Final</hibernate.version>
+		<servlet.version>2.5</servlet.version>
 	</properties>
 	
 	<build>
@@ -85,6 +87,12 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -126,6 +134,21 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>${spring.version}</version>
+		</dependency>
+ 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+ 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
 		</dependency>
  
 		<dependency>

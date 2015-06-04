@@ -20,6 +20,9 @@ public interface IQueryFactory {
 	@SuppressWarnings("unchecked")
 	IQuery createQuery(String namedQuery, Map<String, ?>... contexts);
 
+	@SuppressWarnings("unchecked")
+	IQuery createQueryFromTemplate(String sql, Map<String, ?>... contexts);
+	
 	ITransaction getTransaction();
 	
 	<T> List<T> queryForList(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts);
@@ -33,5 +36,4 @@ public interface IQueryFactory {
 	int update(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts);
 	
 	<T> void iterate(String namedQuery, IRowHandlerCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts);
-	
 }

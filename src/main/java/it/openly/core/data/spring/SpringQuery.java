@@ -128,5 +128,4 @@ public class SpringQuery extends AbstractQuery {
 
 		});
 	}
-
 }

@@ -47,9 +47,15 @@ public abstract class AbstractQueryFactory implements IQueryFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public IQuery createQuery(String namedQuery, Map<String, ?>... contexts) {
+		String sqlStatementTemplate = Resources.resolveStringResource(getResourceResolvers(), namedQuery);
+		return createQueryFromTemplate(sqlStatementTemplate, contexts);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public IQuery createQueryFromTemplate(String sqlStatementTemplate, Map<String, ?>... contexts) {
 		ContextUtils ctx = null;
 
-		String sqlStatementTemplate = Resources.resolveStringResource(getResourceResolvers(), namedQuery);
 		Map<String, Object> context = Maps.merge(contexts);
 
 		ctx = createPreprocessingContextUtils(context);
@@ -104,5 +110,4 @@ public abstract class AbstractQueryFactory implements IQueryFactory {
 	public <T> void iterate(String namedQuery, IRowHandlerCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
 		createQuery(namedQuery, contexts).iterate(callback, contexts);
 	}
-	
 }
