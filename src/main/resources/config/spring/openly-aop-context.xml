@@ -6,9 +6,9 @@
 	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
  
-	<beans:bean id="openlyAspectLogger" class="it.openly.base.logging.AspectModule" />
+	<beans:bean id="openlyAspectLogger" class="it.openly.core.logging.AspectModule" />
 	<aop:config>
-		<aop:aspect id="aspectLogging" ref="aspectLogger" >
+		<aop:aspect id="aspectLogging" ref="openlyAspectLogger" >
 			<aop:pointcut id="pointCutAround" expression="execution(public * it.openly..*(..))" />
 			<aop:around method="logAround" pointcut-ref="pointCutAround"  />
 		</aop:aspect>
