@@ -10,7 +10,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 /**
- * Factory object for querys. Create query objects taking care of adding an
+ * Factory object for queries. Create query objects taking care of adding an
  * additional parsing layer using Velocity if needed.
  * 
  */
