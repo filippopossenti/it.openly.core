@@ -27,11 +27,27 @@ public class VelocityTemplateProcessor implements ITemplateProcessor {
 		this.helperObject = helperObject;
 	}
 	
+	public void setHelperObject(Object helperObject) {
+		this.helperObject = helperObject;
+	}
+	
+	public Object getHelperObject() {
+		return this.helperObject;
+	}
+	
+	public void setHelperKey(String helperKey) {
+		this.helperKey = helperKey;
+	}
+	
+	public String getHelperKey() {
+		return helperKey;
+	}
+	
 	@Override
 	public String processTemplate(String templateText, Map<String, ?>... contexts) {
 		Map<String, Object> context = prepareSingleContext(contexts);
 		if(helperKey != null) {
-			context.put(helperKey, helperObject);
+			context.put(helperKey, getHelperObject());
 		}
 		
 		VelocityContext vcontext = new VelocityContext(context);
