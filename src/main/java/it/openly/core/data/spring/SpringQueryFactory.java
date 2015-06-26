@@ -25,7 +25,7 @@ public class SpringQueryFactory extends AbstractQueryFactory {
 		super();
 		setDataSource(dataSource);
 	}
-	
+
 	/**
 	 * Gets the datasource used by default when creating new querys.
 	 * 
@@ -43,7 +43,7 @@ public class SpringQueryFactory extends AbstractQueryFactory {
 	public void setDataSource(DataSource value) {
 		dataSource = value;
 	}
-
+	
 	@Override
 	public ITransaction getTransaction() {
 		return new SpringTransaction(getDataSource());

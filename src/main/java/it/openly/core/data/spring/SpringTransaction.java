@@ -19,7 +19,6 @@ public class SpringTransaction implements ITransaction {
 		transactionManager = new DataSourceTransactionManager(dataSource);
 		DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
 		txStatus = transactionManager.getTransaction(transactionDefinition);
-
 	}
 
 	@Override

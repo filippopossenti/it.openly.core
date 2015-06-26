@@ -9,6 +9,7 @@ public interface IResourceResolver {
 	 * @return
 	 */
 	InputStream resolveResource(String resourceName);
+	InputStream resolveResource(String resourceName, boolean failIfNotExisting, boolean failIfManyExisting);
 	
 	boolean getFailIfNotExisting();
 	void setFailIfNotExisting(boolean failIfNotExisting);

@@ -53,13 +53,18 @@ public class DefaultResourceResolver implements IResourceResolver {
 
 	@Override
 	public InputStream resolveResource(String resourceName) {
+		return resolveResource(resourceName, getFailIfNotExisting(), getFailIfManyExisting());
+	}
+	
+	@Override
+	public InputStream resolveResource(String resourceName, boolean failIfNotExisting, boolean failIfManyExisting) {
 		ResourcePatternResolver resolver = getResourcePatternResolver();
 		String path = composePath(resourceName);
 		try {
 			Resource[] resources = resolver.getResources(path);
-			if (resources.length == 0 && getFailIfNotExisting())
+			if (resources.length == 0 && failIfNotExisting)
 				throw new TooFewResultsException("No matching resource was not found.", path);
-			else if (resources.length > 1 && getFailIfManyExisting())
+			else if (resources.length > 1 && failIfManyExisting)
 				throw new TooManyResultsException("Too many resources found for the given path.", path);
 			if (resources.length == 0)
 				return null;
