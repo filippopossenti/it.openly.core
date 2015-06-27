@@ -2,6 +2,7 @@ package it.openly.core.data.spring;
 
 import it.openly.core.data.AbstractQueryFactory;
 import it.openly.core.data.ContextUtils;
+import it.openly.core.data.IDataSourceAware;
 import it.openly.core.data.IQuery;
 import it.openly.core.data.ITransaction;
 
@@ -14,7 +15,7 @@ import javax.sql.DataSource;
  * additional parsing layer using Velocity if needed.
  * 
  */
-public class SpringQueryFactory extends AbstractQueryFactory {
+public class SpringQueryFactory extends AbstractQueryFactory implements IDataSourceAware {
 	private DataSource dataSource = null;
 
 	public SpringQueryFactory() {
@@ -31,6 +32,7 @@ public class SpringQueryFactory extends AbstractQueryFactory {
 	 * 
 	 * @return
 	 */
+	@Override
 	public DataSource getDataSource() {
 		return dataSource;
 	}
@@ -40,6 +42,7 @@ public class SpringQueryFactory extends AbstractQueryFactory {
 	 * 
 	 * @param value
 	 */
+	@Override
 	public void setDataSource(DataSource value) {
 		dataSource = value;
 	}
