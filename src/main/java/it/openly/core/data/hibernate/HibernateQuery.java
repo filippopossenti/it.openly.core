@@ -83,6 +83,12 @@ public class HibernateQuery extends AbstractQuery {
 	public <T> T queryForObject(Class<T> clazz, Map<String, ?>... contexts) {
 		return (T) createQuery(contexts).uniqueResult();
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> queryForMap(Map<String, ?>... contexts) {
+		return (Map<String, Object>)createQuery(contexts).uniqueResult();
+	}
 
 	@Override
 	public int update(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
@@ -109,5 +115,4 @@ public class HibernateQuery extends AbstractQuery {
 		 * while(it.hasNext()) { T row = it.next(); callback.handleRow(row); }
 		 */
 	}
-
 }

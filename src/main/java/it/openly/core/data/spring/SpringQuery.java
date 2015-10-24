@@ -109,6 +109,11 @@ public class SpringQuery extends AbstractQuery {
 	}
 
 	@Override
+	public Map<String, Object> queryForMap(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+		return queryForMap(getDataSource(), contexts);
+	}
+
+	@Override
 	public int update(@SuppressWarnings("unchecked") Map<String, ?>... contexts) {
 		return update(getDataSource(), contexts);
 	}

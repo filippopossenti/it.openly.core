@@ -3,6 +3,8 @@ package it.openly.core.data;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 /**
  * A generic runnable query. Implementation may provide additional methods for
  * greater flexibility.
@@ -40,6 +42,8 @@ public interface IQuery {
 	long queryForLong(@SuppressWarnings("unchecked") Map<String, ?>... contexts);
 
 	<T> T queryForObject(Class<T> clazz, @SuppressWarnings("unchecked") Map<String, ?>... contexts);
+	
+	Map<String, Object> queryForMap(@SuppressWarnings("unchecked") Map<String, ?>... contexts);
 
 	int update(@SuppressWarnings("unchecked") Map<String, ?>... contexts);
 
