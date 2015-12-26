@@ -5,14 +5,15 @@ import it.openly.core.data.AbstractQueryFactory;
 import it.openly.core.data.ContextUtils;
 import it.openly.core.data.IDataSourceAware;
 import it.openly.core.data.IQuery;
-import it.openly.core.data.IQueryFactory;
 import it.openly.core.data.ITransaction;
 
+import java.sql.Connection;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
 /**
  * Factory object for queries. Create query objects taking care of adding an
@@ -29,6 +30,29 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 		"MySQL", "mysql",
 		"HSQL Database Engine", "hsql"
 	));
+	private String dbType = null;
+	
+	private String detectDbType(DataSource ds) {
+		if(dbType == null) {
+			Map<String, String> databaseTypes = getDatabaseTypes();
+			Connection conn = null;
+			try {
+				conn = ds.getConnection();
+				String dbProduct = conn.getMetaData().getDatabaseProductName();
+				dbType = databaseTypes.get(dbProduct);
+				if(dbType == null) {
+					dbType = "generic";
+				}
+			}
+			catch(Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			finally {
+				DataSourceUtils.releaseConnection(conn, ds);
+			}
+		}
+		return dbType;
+	}
 
 	public SpringQueryFactory() {
 		super();
@@ -57,6 +81,7 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 	@Override
 	public void setDataSource(DataSource value) {
 		dataSource = value;
+		dbType = null;
 	}
 	
 	/**
@@ -93,18 +118,7 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 	
 	
 	private String buildQueryPath(String namedQuery) {
-		try {
-			DataSource ds = getDataSource();
-			Map<String, String> databaseTypes = getDatabaseTypes();
-			String dbProduct = ds.getConnection().getMetaData().getDatabaseProductName();
-			String dbType = databaseTypes.get(dbProduct);
-			if(dbType == null) {
-				dbType = "generic";
-			}
-			return FilenameUtils.concat(dbType, namedQuery).replace('\\', '/');
-		}
-		catch(Exception ex) {
-			throw new RuntimeException(ex);
-		}
+		String dbType = detectDbType(getDataSource());
+		return FilenameUtils.concat(dbType, namedQuery).replace('\\', '/');
 	}
 }

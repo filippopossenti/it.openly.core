@@ -1,6 +1,7 @@
 package it.openly.core.data.spring;
 
 import it.openly.core.data.AbstractQuery;
+import it.openly.core.data.IDataSourceAware;
 import it.openly.core.data.IRowHandlerCallback;
 
 import java.sql.ResultSet;
@@ -21,7 +22,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
  * @author Filippo
  * 
  */
-public class SpringQuery extends AbstractQuery {
+public class SpringQuery extends AbstractQuery implements IDataSourceAware {
 
 	private DataSource dataSource = null;
 
