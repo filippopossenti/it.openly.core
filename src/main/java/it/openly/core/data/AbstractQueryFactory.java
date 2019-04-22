@@ -15,6 +15,7 @@ import java.util.Map;
  * adding an additional parsing layer.
  * 
  */
+@SuppressWarnings({"unchecked", "varargs"})
 public abstract class AbstractQueryFactory implements IQueryFactory {
 	private ITemplateProcessor templateProcessor = new VelocityTemplateProcessor();
 	private List<IResourceResolver> resourceResolvers = Resources.getResourceResolvers();
@@ -54,11 +55,8 @@ public abstract class AbstractQueryFactory implements IQueryFactory {
 	@Override
 	@SuppressWarnings("unchecked")
 	public IQuery createQueryFromTemplate(String sqlStatementTemplate, Map<String, ?>... contexts) {
-		ContextUtils ctx = null;
-
 		Map<String, Object> context = Maps.merge(contexts);
-
-		ctx = createPreprocessingContextUtils(context);
+        ContextUtils ctx = createPreprocessingContextUtils(context);
 		context.put("CTX", ctx);
 		String sql = templateProcessor.processTemplate(sqlStatementTemplate, context);
 		if (getRemoveEmptyLines())
@@ -110,4 +108,9 @@ public abstract class AbstractQueryFactory implements IQueryFactory {
 	public <T> void iterate(String namedQuery, IRowHandlerCallback<T> callback, Map<String, ?>... contexts) {
 		createQuery(namedQuery, contexts).iterate(callback, contexts);
 	}
+
+	@Override
+    public void execute(String namedQuery, Map<String, ?>... contexts) {
+        createQuery(namedQuery, contexts).execute(contexts);
+    }
 }

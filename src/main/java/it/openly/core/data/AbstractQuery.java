@@ -27,12 +27,7 @@ public abstract class AbstractQuery implements IQuery {
 	}
 
 	protected Map<String, ?> mergeContext(Map<String, ?>[] contexts) {
-		if (contexts == null || contexts.length == 0) {
-			return getContext();
-		}
-		Map<String, Object> result = new HashMap<>(getContext());
-		result = Maps.mergeInto(result, contexts);
-		return result;
+		return Maps.mergeInto(new HashMap<>(getContext()), contexts);
 	}
 
 	public AbstractQuery(String sqlStatement, Map<String, ?> context) {

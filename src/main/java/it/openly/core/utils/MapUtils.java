@@ -18,7 +18,9 @@ public class MapUtils implements IMapUtils {
 	@Override
 	public Map<String, Object> mergeInto(Map<String, Object> destination, Map<String, ?>[] contexts) {
 		for (int i = 0; i < contexts.length; i++) {
-			destination.putAll(contexts[i]);
+			if(contexts[i] != null) {
+				destination.putAll(contexts[i]);
+			}
 		}
 		return destination;
 	}

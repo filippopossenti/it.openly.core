@@ -8,6 +8,7 @@ import java.util.Map;
  * @author Filippo
  *
  */
+@SuppressWarnings({"unchecked", "varargs"})
 public interface IQueryFactory {
 	
 	/**
@@ -36,4 +37,7 @@ public interface IQueryFactory {
 	int update(String namedQuery, Map<String, ?>... contexts);
 	
 	<T> void iterate(String namedQuery, IRowHandlerCallback<T> callback, Map<String, ?>... contexts);
+
+	void execute(String namedQuery, Map<String, ?>... contexts);
+
 }
