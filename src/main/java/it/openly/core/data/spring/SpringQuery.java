@@ -15,11 +15,12 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
 /**
- * Run querys.
+ * Run queries.
  * 
  * @author Filippo
  * 
  */
+@SuppressWarnings({"unchecked", "varargs"})
 public class SpringQuery extends AbstractQuery implements IDataSourceAware {
 
 	private DataSource dataSource;
@@ -42,18 +43,6 @@ public class SpringQuery extends AbstractQuery implements IDataSourceAware {
 
 	public void query(DataSource dataSource, RowCallbackHandler callback, Map<String, ?>... contexts) {
 		springObjectsFactory.getNamedParameterJdbcTemplate(dataSource).query(getSqlStatement(), mergeContext(contexts), callback);
-	}
-
-	public <T> void iterate(DataSource dataSource, final IRowHandlerCallback<T> callback, Map<String, ?>... contexts) {
-		query(dataSource, new RowCallbackHandler() {
-			ColumnMapRowMapper mapper = springObjectsFactory.getColumnMapRowMapper();
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void processRow(ResultSet rs) throws SQLException {
-				callback.handleRow((T) mapper.mapRow(rs, rs.getRow()));
-			}
-		}, mergeContext(contexts));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,6 +83,14 @@ public class SpringQuery extends AbstractQuery implements IDataSourceAware {
 
 	@Override
 	public <T> void iterate(final IRowHandlerCallback<T> callback, Map<String, ?>... contexts) {
-		iterate(getDataSource(), callback, contexts);
+		query(getDataSource(), new RowCallbackHandler() {
+			ColumnMapRowMapper mapper = springObjectsFactory.getColumnMapRowMapper();
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void processRow(ResultSet rs) throws SQLException {
+				callback.handleRow((T) mapper.mapRow(rs, rs.getRow()));
+			}
+		}, mergeContext(contexts));
 	}
 }

@@ -10,6 +10,7 @@ import java.util.Map;
  * @author Filippo
  * 
  */
+@SuppressWarnings({"unchecked", "varargs"})
 public interface IQuery {
 
 	/**
