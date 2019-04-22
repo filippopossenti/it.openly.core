@@ -45,6 +45,8 @@ public interface IQuery {
 
 	int update(Map<String, ?>... contexts);
 
+	void execute(Map<String, ?>... contexts);
+
 	/**
 	 * Iterates through records. This method is intended to provide a way to
 	 * iterate records one at a time instead of loading them all into memory.

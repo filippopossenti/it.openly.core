@@ -35,11 +35,6 @@ public abstract class AbstractQuery implements IQuery {
 		return result;
 	}
 
-	protected void assertNotNull(Object obj, String message) {
-		if (obj == null)
-			throw new RuntimeException(message);
-	}
-
 	public AbstractQuery(String sqlStatement, Map<String, ?> context) {
 		this.sqlStatement = sqlStatement;
 		this.context = context;

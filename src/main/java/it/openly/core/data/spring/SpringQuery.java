@@ -12,9 +12,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.ColumnMapRowMapper;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 /**
  * Run querys.
@@ -26,9 +24,12 @@ public class SpringQuery extends AbstractQuery implements IDataSourceAware {
 
 	private DataSource dataSource;
 
-	public SpringQuery(DataSource dataSource, String sqlStatement, Map<String, ?> context) {
+	private SpringObjectsFactory springObjectsFactory;
+
+	public SpringQuery(DataSource dataSource, String sqlStatement, Map<String, ?> context, SpringObjectsFactory springObjectsFactory) {
 		super(sqlStatement, context);
 		this.dataSource = dataSource;
+		this.springObjectsFactory = springObjectsFactory;
 	}
 
 	public DataSource getDataSource() {
@@ -40,98 +41,59 @@ public class SpringQuery extends AbstractQuery implements IDataSourceAware {
 	}
 
 	public void query(DataSource dataSource, RowCallbackHandler callback, Map<String, ?>... contexts) {
-		getNamedParameterJdbcTemplate(dataSource).query(getSqlStatement(), mergeContext(contexts), callback);
+		springObjectsFactory.getNamedParameterJdbcTemplate(dataSource).query(getSqlStatement(), mergeContext(contexts), callback);
 	}
 
-	public void query(RowCallbackHandler callback, Map<String, ?>... contexts) {
-		query(getDataSource(), callback, contexts);
-	}
+	public <T> void iterate(DataSource dataSource, final IRowHandlerCallback<T> callback, Map<String, ?>... contexts) {
+		query(dataSource, new RowCallbackHandler() {
+			ColumnMapRowMapper mapper = springObjectsFactory.getColumnMapRowMapper();
 
-	public <T> void execute(DataSource dataSource, PreparedStatementCallback<T> callback, Map<String, ?>... contexts) {
-		getNamedParameterJdbcTemplate(dataSource).execute(getSqlStatement(), mergeContext(contexts), callback);
-	}
-
-	public <T> void execute(PreparedStatementCallback<T> callback, Map<String, ?>... contexts) {
-		execute(getDataSource(), callback, contexts);
-	}
-
-	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate(DataSource dataSource) {
-		assertNotNull(dataSource, "DataSource cannot be null.");
-		return new NamedParameterJdbcTemplate(dataSource);
-	}
-
-	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-		return getNamedParameterJdbcTemplate(getDataSource());
-	}
-
-	public List<Map<String, Object>> queryForList(DataSource dataSource, Map<String, ?>... contexts) {
-		return getNamedParameterJdbcTemplate(dataSource).queryForList(getSqlStatement(), mergeContext(contexts));
-	}
-
-	public int queryForInt(DataSource dataSource, Map<String, ?>... contexts) {
-		return queryForObject(dataSource, Integer.class, contexts);
-	}
-
-	public long queryForLong(DataSource dataSource, Map<String, ?>... contexts) {
-		return queryForObject(dataSource, Long.class, contexts);
-	}
-
-	public <T> T queryForObject(DataSource dataSource, Class<T> clazz, Map<String, ?>... contexts) {
-		return getNamedParameterJdbcTemplate(dataSource).queryForObject(getSqlStatement(), mergeContext(contexts), clazz);
-	}
-
-	public Map<String, Object> queryForMap(DataSource dataSource, Map<String, ?>... contexts) {
-		return getNamedParameterJdbcTemplate(dataSource).queryForMap(getSqlStatement(), mergeContext(contexts));
-	}
-
-	public int update(DataSource dataSource, Map<String, ?>... contexts) {
-		return getNamedParameterJdbcTemplate(dataSource).update(getSqlStatement(), mergeContext(contexts));
+			@SuppressWarnings("unchecked")
+			@Override
+			public void processRow(ResultSet rs) throws SQLException {
+				callback.handleRow((T) mapper.mapRow(rs, rs.getRow()));
+			}
+		}, mergeContext(contexts));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> List<T> queryForList(Map<String, ?>... contexts) {
-		return (List<T>) queryForList(getDataSource(), contexts);
+		return (List<T>)springObjectsFactory.getNamedParameterJdbcTemplate(getDataSource()).queryForList(getSqlStatement(), mergeContext(contexts));
 	}
 
 	@Override
 	public int queryForInt(Map<String, ?>... contexts) {
-		return queryForInt(getDataSource(), contexts);
+		return queryForObject(Integer.class, contexts);
 	}
 
 	@Override
 	public long queryForLong(Map<String, ?>... contexts) {
-		return queryForLong(getDataSource(), contexts);
+		return queryForObject(Long.class, contexts);
 	}
 
 	@Override
 	public <T> T queryForObject(Class<T> clazz, Map<String, ?>... contexts) {
-		return queryForObject(getDataSource(), clazz, contexts);
+		return springObjectsFactory.getNamedParameterJdbcTemplate(getDataSource()).queryForObject(getSqlStatement(), mergeContext(contexts), clazz);
 	}
 
 	@Override
 	public Map<String, Object> queryForMap(Map<String, ?>... contexts) {
-		return queryForMap(getDataSource(), contexts);
+		return springObjectsFactory.getNamedParameterJdbcTemplate(getDataSource()).queryForMap(getSqlStatement(), mergeContext(contexts));
 	}
 
 	@Override
 	public int update(Map<String, ?>... contexts) {
-		return update(getDataSource(), contexts);
+		return springObjectsFactory.getNamedParameterJdbcTemplate(getDataSource()).update(getSqlStatement(), mergeContext(contexts));
 	}
 
 	@Override
-	public <T> void iterate(IRowHandlerCallback<T> callback, Map<String, ?>... contexts) {
-		final IRowHandlerCallback<T> cb = callback;
-		getNamedParameterJdbcTemplate(dataSource).query(getSqlStatement(), mergeContext(contexts), new RowCallbackHandler() {
+	public void execute(Map<String, ?>... contexts) {
+		springObjectsFactory.getNamedParameterJdbcTemplate(getDataSource()).execute(getSqlStatement(), mergeContext(contexts), var1 -> null);
+	}
 
-			ColumnMapRowMapper mapper = new ColumnMapRowMapper();
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void processRow(ResultSet rs) throws SQLException {
-				cb.handleRow((T) mapper.mapRow(rs, rs.getRow()));
-			}
-
-		});
+	@Override
+	public <T> void iterate(final IRowHandlerCallback<T> callback, Map<String, ?>... contexts) {
+		iterate(getDataSource(), callback, contexts);
 	}
 }

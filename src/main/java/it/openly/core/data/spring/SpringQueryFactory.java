@@ -22,6 +22,8 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
  */
 public class SpringQueryFactory extends AbstractQueryFactory implements IDataSourceAware {
 	private DataSource dataSource = null;
+	private SpringObjectsFactory springObjectsFactory;
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Map<String, String> databaseTypes = (Map<String, String>)((Map)Maps.build(
 		"Oracle", "oracle",
@@ -54,15 +56,20 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 		return dbType;
 	}
 
-	public SpringQueryFactory() {
-		super();
-	}
-	
-	public SpringQueryFactory(DataSource dataSource) {
+	public SpringQueryFactory(DataSource dataSource, SpringObjectsFactory springObjectsFactory) {
 		super();
 		setDataSource(dataSource);
+		setSpringObjectsFactory(springObjectsFactory);
 	}
 
+	public SpringQueryFactory(DataSource dataSource) {
+		this(dataSource, new SpringObjectsFactory());
+	}
+
+	public SpringQueryFactory() {
+		this(null, new SpringObjectsFactory());
+	}
+	
 	/**
 	 * Gets the datasource used by default when creating new queries.
 	 * 
@@ -94,12 +101,28 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 	
 	/**
 	 * Sets the collection of all known database types
-	 * @param value
+	 * @param value The database types. The key is the value fetched from the database, the value is a short string identifying the database that will be used to fetch queries
 	 */
 	public void setDatabaseTypes(Map<String, String> value) {
 		this.databaseTypes = value;
 	}
-	
+
+	/**
+	 * Returns the factory of the NamedParameterJdbcTemplate objects
+	 * @return The factory
+	 */
+	public SpringObjectsFactory setSpringObjectsFactory() {
+		return springObjectsFactory;
+	}
+
+	/**
+	 * Sets the factory of the NamedParameterJdbcTemplate objects
+	 * @param springObjectsFactory The factory
+	 */
+	public void setSpringObjectsFactory(SpringObjectsFactory springObjectsFactory) {
+		this.springObjectsFactory = springObjectsFactory;
+	}
+
 	@Override
 	public ITransaction getTransaction() {
 		return new SpringTransaction(getDataSource());
@@ -107,7 +130,7 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 
 	@Override
 	protected IQuery createQueryObject(String sql, Map<String, ?> context, ContextUtils ctx) {
-		return new SpringQuery(getDataSource(), sql, context);
+		return new SpringQuery(getDataSource(), sql, context, springObjectsFactory);
 	}
 	
 	@SuppressWarnings("unchecked")
