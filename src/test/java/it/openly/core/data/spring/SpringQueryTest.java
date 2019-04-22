@@ -3,11 +3,9 @@ package it.openly.core.data.spring;
 import it.openly.core.data.IRowHandlerCallback;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -16,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -90,14 +89,57 @@ public class SpringQueryTest {
     public void testExecuteCallsSpring() {
         // given
         Map<String, Object> context = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
+        context.put("y", "y-value");
+        params.put("x", "x-value");
         SpringQuery query = new SpringQuery(dataSource1, "update mytable set x=:y where x=:x", context, springObjectsFactory);
         when(springObjectsFactory.getNamedParameterJdbcTemplate(dataSource1)).thenReturn(namedParameterJdbcTemplate);
 
         // when
-        query.execute(new HashMap<>());
+        query.execute(params);
 
         // then
         verify(springObjectsFactory, times(1)).getNamedParameterJdbcTemplate(dataSource1);
+        verify(namedParameterJdbcTemplate, times(1)).execute(eq("update mytable set x=:y where x=:x"), argThat((Map<String, Object> m) -> Objects.equals(m.get("x"), params.get("x")) && Objects.equals(m.get("y"), context.get("y"))), any());
+    }
+
+    @Test
+    public void testUpdateCallsSpring() {
+        // given
+        Map<String, Object> context = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
+        context.put("y", "y-value");
+        params.put("x", "x-value");
+        SpringQuery query = new SpringQuery(dataSource1, "update mytable set x=:y where x=:x", context, springObjectsFactory);
+        when(springObjectsFactory.getNamedParameterJdbcTemplate(dataSource1)).thenReturn(namedParameterJdbcTemplate);
+
+        // when
+        query.update(params);
+
+        // then
+        verify(springObjectsFactory, times(1)).getNamedParameterJdbcTemplate(dataSource1);
+        verify(namedParameterJdbcTemplate, times(1)).update(eq("update mytable set x=:y where x=:x"), argThat((Map<String, Object> m) -> Objects.equals(m.get("x"), params.get("x")) && Objects.equals(m.get("y"), context.get("y"))));
+    }
+
+    @Test
+    public void testQueryForMapCallsSpring() {
+        // given
+        Map<String, Object> context = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
+        context.put("y", "y-value");
+        params.put("x", "x-value");
+        SpringQuery query = new SpringQuery(dataSource1, "select * from mytable where x=:x", context, springObjectsFactory);
+        when(springObjectsFactory.getNamedParameterJdbcTemplate(dataSource1)).thenReturn(namedParameterJdbcTemplate);
+        when(namedParameterJdbcTemplate.queryForMap(eq("select * from mytable where x=:x"), anyMap())).thenReturn(result);
+
+        // when
+        Map<String, Object> actualResult = query.queryForMap(params);
+
+        // then
+        verify(springObjectsFactory, times(1)).getNamedParameterJdbcTemplate(dataSource1);
+        verify(namedParameterJdbcTemplate, times(1)).queryForMap(eq("select * from mytable where x=:x"), argThat((Map<String, Object> m) -> Objects.equals(m.get("x"), params.get("x")) && Objects.equals(m.get("y"), context.get("y"))));
+        assertThat(actualResult, is(result));
     }
 
 }
