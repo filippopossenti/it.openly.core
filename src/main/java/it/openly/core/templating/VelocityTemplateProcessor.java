@@ -58,7 +58,7 @@ public class VelocityTemplateProcessor implements ITemplateProcessor {
 	}
 	
 	private Map<String, Object> prepareSingleContext(Map<String, ?>[] contexts) {
-		Map<String, Object> rv = new HashMap<String, Object>();
+		Map<String, Object> rv = new HashMap<>();
 		for(int i = 0; i < contexts.length; i++) {
 			rv.putAll(contexts[i]);
 		}

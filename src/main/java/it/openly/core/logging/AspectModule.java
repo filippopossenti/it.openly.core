@@ -44,28 +44,28 @@ public class AspectModule {
 	 * Represents the current HTTP session, if any.<br/>
 	 * Logback specifier: %X{session}
 	 */
-	public final String SESSION = "session";
+	public static final String SESSION = "session";
 	/**
 	 * Represents the currently logged in user, if any, extracted from Spring's SecurityContextHolder.<br/>
 	 * Logback specifier: %X{user}
 	 */
-	public final String USER = "user";
+	public static final String USER = "user";
 	/**
 	 * Represents the joinpoint currently being evaluated. This includes the full class and method name.<br/>
 	 * Logback specifier: %X{joinpoint}
 	 */
-	public final String JOINPOINT = "joinpoint";
+	public static final String JOINPOINT = "joinpoint";
 	/**
 	 * Represents the name of the method currently being evaluated.<br/>
 	 * Logback specifier: %X{methodname}
 	 */
-	public final String METHODNAME = "methodname";
+	public static final String METHODNAME = "methodname";
 	/**
 	 * Represents the time taken by method's execution.<br/>
 	 * Note that when starting method execution an empty string will be specified.<br/>
 	 * Logback specifier: %X{elapsedtime}
 	 */
-	public final String ELAPSEDTIME = "elapsedtime";
+	public static final String ELAPSEDTIME = "elapsedtime";
 	
 	/**
 	 * Meant to be consumed by AspectJ as an "around execution" pointcut.<br/>
@@ -81,12 +81,12 @@ public class AspectModule {
 	 * %d{ISO8601}|${appname}|%thread|%X{session}|%X{user}|%-5level|%logger{60}|%X{methodname}|%X{elapsedtime}|%msg %n<br/>
 	 * 
 	 * 
-	 * @param joinPoint
-	 * @return
-	 * @throws Throwable
+	 * @param joinPoint The joinpoint
+	 * @return The result value of the function
+	 * @throws Throwable The thrown exception
 	 */
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-		Logger LOGGER = LoggerFactory.getLogger(joinPoint.getSignature().getDeclaringType());
+		Logger logger = LoggerFactory.getLogger(joinPoint.getSignature().getDeclaringType());
 		
 		String typeName = joinPoint.getSignature().getDeclaringTypeName();
 		String methodName = joinPoint.getSignature().getName();
@@ -97,22 +97,22 @@ public class AspectModule {
 		MDC.put(METHODNAME, methodName);
 		MDC.put(ELAPSEDTIME, "");
 		
-		LOGGER.debug("Starting execution of {}.", typeName + "." + methodName);
-		logArguments(LOGGER, typeName + "." + methodName, joinPoint.getArgs());
+		logger.debug("Starting execution of {}.{}.", typeName, methodName);
+		logArguments(logger, typeName + "." + methodName, joinPoint.getArgs());
 		StopWatch stopwatch = new StopWatch();
 		try {
 			stopwatch.start();
 			Object result = joinPoint.proceed();
 			stopwatch.stop();
-			LOGGER.debug("Return value of {}: {}", typeName + "." + methodName, result);
+			logger.debug("Return value of {}.{}: {}", typeName, methodName, result);
 			MDC.put(ELAPSEDTIME, stopwatch.getTotalTimeMillis() + " ms");
-			LOGGER.debug("Execution succeeded for {}", typeName + "." + methodName);
+			logger.debug("Execution succeeded for {}.{}", typeName, methodName);
 			return result;
 		}
 		catch(Throwable t) {
 			stopwatch.stop();
 			MDC.put(ELAPSEDTIME, stopwatch.getTotalTimeMillis() + " ms");
-			LOGGER.error("Execution failed for method {}. Exception hash is {}, stack trace follows.", typeName + "." + methodName, t.hashCode(), t);
+			logger.error("Execution failed for method {}. Exception hash is {}, stack trace follows.", typeName + "." + methodName, t.hashCode(), t);
 			throw t;
 		}
 		finally {
@@ -149,7 +149,7 @@ public class AspectModule {
 			Authentication auth = ctx.getAuthentication();
 			if(auth != null) {
 				Object princ = auth.getPrincipal();
-				if(princ != null && (princ instanceof User)) {
+				if(princ instanceof User) {
 					User user = (User)princ;
 					result = user.getUsername();
 				}

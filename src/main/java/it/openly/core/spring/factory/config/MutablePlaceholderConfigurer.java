@@ -55,9 +55,9 @@ public class MutablePlaceholderConfigurer extends PropertyPlaceholderConfigurer 
 	}
 
 	private static abstract class Expression {
-		private String name = null;
+		private String name;
 		private String value = null;
-		private boolean staticValue = true;
+		private boolean staticValue;
 
 		public Expression(String name, boolean staticValue) {
 			this.name = name;

@@ -17,9 +17,9 @@ import java.util.List;
  */
 public class ObservableOutputStream extends OutputStream implements IObservableStream, IStreamWithParent<OutputStream> {
 
-	private OutputStream destStream = null;
+	private OutputStream destStream;
 	private long position = 0;
-	private List<IObserver> observers = new ArrayList<IObserver>();
+	private List<IObserver> observers = new ArrayList<>();
 
 	public ObservableOutputStream(OutputStream destStream) {
 		super();

@@ -11,7 +11,7 @@ public class StringUtils implements IStringUtils {
 		BufferedReader rdr = new BufferedReader(new StringReader(instr));
 		try {
 			StringWriter wtr = new StringWriter();
-			String line = null;
+			String line;
 			while ((line = rdr.readLine()) != null) {
 				String l = line.trim();
 				if (!"".equals(l))

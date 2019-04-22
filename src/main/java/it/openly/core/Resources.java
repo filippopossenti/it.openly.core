@@ -25,7 +25,7 @@ public class Resources {
 		IResourceResolver defaultResolver = new DefaultResourceResolver();
 		defaultResolver.setFailIfNotExisting(true);
 		defaultResolver.setFailIfManyExisting(true);
-		resourceResolvers = new ArrayList<IResourceResolver>();
+		resourceResolvers = new ArrayList<>();
 		resourceResolvers.add(defaultResolver);
 	}
 

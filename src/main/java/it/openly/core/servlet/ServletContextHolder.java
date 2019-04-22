@@ -5,8 +5,8 @@ import javax.servlet.ServletContext;
 public class ServletContextHolder {
 	
 	private static ServletContext servletContext;
-	
-	synchronized static void setServletContext(ServletContext value) {
+
+	static synchronized void setServletContext(ServletContext value) {
 		servletContext = value;
 	}
 	

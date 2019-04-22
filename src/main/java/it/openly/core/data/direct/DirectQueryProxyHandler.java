@@ -37,14 +37,14 @@ public class DirectQueryProxyHandler implements InvocationHandler {
 				paramName = discoveredParamNames[i];
 				if(paramName == null) {
 					logger.error("No name could be discovered for argument {} of method {}.{}.", i, method.getClass().getName(), method.getName());
-					throw new Exception("No name could be discovered for argument " + String.valueOf(i));
+					throw new Exception("No name could be discovered for argument " + i);
 				}
 			}
 			parameterNames[i] = paramName;
 			
 		}
 
-		Map<String, Object> context = new HashMap<String, Object>();
+		Map<String, Object> context = new HashMap<>();
 		for(int i = 0; i < args.length; i++) {
 			context.put(parameterNames[i], args[i]);
 		}

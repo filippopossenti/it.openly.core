@@ -34,12 +34,12 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 	
 	private String detectDbType(DataSource ds) {
 		if(dbType == null) {
-			Map<String, String> databaseTypes = getDatabaseTypes();
+			Map<String, String> dbTypes = getDatabaseTypes();
 			Connection conn = null;
 			try {
 				conn = ds.getConnection();
 				String dbProduct = conn.getMetaData().getDatabaseProductName();
-				dbType = databaseTypes.get(dbProduct);
+				dbType = dbTypes.get(dbProduct);
 				if(dbType == null) {
 					dbType = "generic";
 				}
@@ -64,9 +64,9 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 	}
 
 	/**
-	 * Gets the datasource used by default when creating new querys.
+	 * Gets the datasource used by default when creating new queries.
 	 * 
-	 * @return
+	 * @return The datasource
 	 */
 	@Override
 	public DataSource getDataSource() {
@@ -74,9 +74,9 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 	}
 
 	/**
-	 * Sets the datasource used by default when creating new querys.
+	 * Sets the datasource used by default when creating new queries.
 	 * 
-	 * @param value
+	 * @param value The datasource
 	 */
 	@Override
 	public void setDataSource(DataSource value) {
@@ -118,7 +118,7 @@ public class SpringQueryFactory extends AbstractQueryFactory implements IDataSou
 	
 	
 	private String buildQueryPath(String namedQuery) {
-		String dbType = detectDbType(getDataSource());
-		return FilenameUtils.concat(dbType, namedQuery).replace('\\', '/');
+		String detectedDbType = detectDbType(getDataSource());
+		return FilenameUtils.concat(detectedDbType, namedQuery).replace('\\', '/');
 	}
 }

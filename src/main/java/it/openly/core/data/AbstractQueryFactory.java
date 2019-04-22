@@ -82,32 +82,32 @@ public abstract class AbstractQueryFactory implements IQueryFactory {
 	}
 	
 	@Override
-	public <T> List<T> queryForList(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+	public <T> List<T> queryForList(String namedQuery, Map<String, ?>... contexts) {
 		return createQuery(namedQuery, contexts).queryForList(contexts);
 	}
 
 	@Override
-	public int queryForInt(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+	public int queryForInt(String namedQuery, Map<String, ?>... contexts) {
 		return createQuery(namedQuery, contexts).queryForInt(contexts);
 	}
 
 	@Override
-	public long queryForLong(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+	public long queryForLong(String namedQuery, Map<String, ?>... contexts) {
 		return createQuery(namedQuery, contexts).queryForLong(contexts);
 	}
 
 	@Override
-	public <T> T queryForObject(String namedQuery, Class<T> clazz, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+	public <T> T queryForObject(String namedQuery, Class<T> clazz, Map<String, ?>... contexts) {
 		return createQuery(namedQuery, contexts).queryForObject(clazz, contexts);
 	}
 
 	@Override
-	public int update(String namedQuery, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+	public int update(String namedQuery, Map<String, ?>... contexts) {
 		return createQuery(namedQuery, contexts).update(contexts);
 	}
 
 	@Override
-	public <T> void iterate(String namedQuery, IRowHandlerCallback<T> callback, @SuppressWarnings("unchecked") Map<String, ?>... contexts) {
+	public <T> void iterate(String namedQuery, IRowHandlerCallback<T> callback, Map<String, ?>... contexts) {
 		createQuery(namedQuery, contexts).iterate(callback, contexts);
 	}
 }

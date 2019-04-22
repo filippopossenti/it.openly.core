@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class ObservableInputStream extends InputStream implements IObservableStream, IStreamWithParent<InputStream> {
 
-	private InputStream sourceStream = null;
+	private InputStream sourceStream;
 	private long position = 0;
-	private List<IObserver> observers = new ArrayList<IObserver>();
+	private List<IObserver> observers = new ArrayList<>();
 
 	public ObservableInputStream(InputStream sourceStream) {
 		super();

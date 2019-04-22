@@ -4,16 +4,16 @@ import it.openly.core.data.ITransaction;
 
 import javax.sql.DataSource;
 
+import it.openly.core.exceptions.RollbackOnlyException;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class SpringTransaction implements ITransaction {
 
-	TransactionStatus txStatus = null;
-	DataSourceTransactionManager transactionManager = null;
-	boolean rollbackOnly = false;
+	private TransactionStatus txStatus;
+	private DataSourceTransactionManager transactionManager;
+	private boolean rollbackOnly = false;
 
 	public SpringTransaction(DataSource dataSource) {
 		transactionManager = new DataSourceTransactionManager(dataSource);
@@ -24,23 +24,15 @@ public class SpringTransaction implements ITransaction {
 	@Override
 	public void commit() {
 		if (!rollbackOnly) {
-			try {
-				transactionManager.commit(txStatus);
-			} catch (TransactionException te) {
-				throw new RuntimeException(te);
-			}
+			transactionManager.commit(txStatus);
 		} else {
-			throw new RuntimeException("Transaction is marked as rollback-only");
+			throw new RollbackOnlyException("Transaction is marked as rollback-only");
 		}
 	}
 
 	@Override
 	public void rollback() {
-		try {
-			transactionManager.rollback(txStatus);
-		} catch (TransactionException te) {
-			throw new RuntimeException(te);
-		}
+		transactionManager.rollback(txStatus);
 	}
 
 	@Override

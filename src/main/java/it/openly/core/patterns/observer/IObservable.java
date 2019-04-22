@@ -1,9 +1,9 @@
 package it.openly.core.patterns.observer;
 
 public interface IObservable {
-	public void attachObserver(IObserver observer);
-	public void detachObserver(IObserver observer);
+	void attachObserver(IObserver observer);
+	void detachObserver(IObserver observer);
 	
-	public void notifyObservers();
-	public void notifyObservers(StateInfo optionalState);
+	void notifyObservers();
+	void notifyObservers(StateInfo optionalState);
 }

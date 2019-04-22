@@ -30,12 +30,9 @@ public abstract class AbstractQuery implements IQuery {
 		if (contexts == null || contexts.length == 0) {
 			return getContext();
 		}
-		Map<String, Object> context = new HashMap<String, Object>();
-		context.putAll(getContext());
-		if (contexts != null && contexts.length > 0) {
-			context = Maps.mergeInto(context, contexts);
-		}
-		return context;
+		Map<String, Object> result = new HashMap<>(getContext());
+		result = Maps.mergeInto(result, contexts);
+		return result;
 	}
 
 	protected void assertNotNull(Object obj, String message) {
