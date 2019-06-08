@@ -16,7 +16,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * A class meant to be used for AOP-based logging using Spring and AspectJ.
+ * A class meant to be used for basic AOP-based logging using Spring and AspectJ.
  * 
  * Methods included in this class allow to ease logging operations and add some useful context
  * to it.<br/>
@@ -36,36 +36,35 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  *     <aop:aspectj-autoproxy/>
  * }
  * 
- * @author Filippo
- *
+ * @author filippo.possenti
  */
 public class AspectModule {
 	/**
 	 * Represents the current HTTP session, if any.<br/>
 	 * Logback specifier: %X{session}
 	 */
-	public static final String SESSION = "session";
+	private static final String SESSION = "session";
 	/**
 	 * Represents the currently logged in user, if any, extracted from Spring's SecurityContextHolder.<br/>
 	 * Logback specifier: %X{user}
 	 */
-	public static final String USER = "user";
+	private static final String USER = "user";
 	/**
 	 * Represents the joinpoint currently being evaluated. This includes the full class and method name.<br/>
 	 * Logback specifier: %X{joinpoint}
 	 */
-	public static final String JOINPOINT = "joinpoint";
+	private static final String JOINPOINT = "joinpoint";
 	/**
 	 * Represents the name of the method currently being evaluated.<br/>
 	 * Logback specifier: %X{methodname}
 	 */
-	public static final String METHODNAME = "methodname";
+	private static final String METHODNAME = "methodname";
 	/**
 	 * Represents the time taken by method's execution.<br/>
 	 * Note that when starting method execution an empty string will be specified.<br/>
 	 * Logback specifier: %X{elapsedtime}
 	 */
-	public static final String ELAPSEDTIME = "elapsedtime";
+	private static final String ELAPSEDTIME = "elapsedtime";
 	
 	/**
 	 * Meant to be consumed by AspectJ as an "around execution" pointcut.<br/>

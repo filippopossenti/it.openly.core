@@ -1,27 +1,25 @@
 package it.openly.core.io;
 
+import lombok.SneakyThrows;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * A stream capable of calculating a message digest over its data
- * @author Filippo
  *
+ * @author filippo.possenti
  */
 public class InputStreamWithDigest extends ObservableInputStream implements IStreamWithDigest {
 
-	private MessageDigest messageDigest = null;
+	private MessageDigest messageDigest;
 	private byte[] digestValue = null;
-	
+
+	@SneakyThrows
 	public InputStreamWithDigest(InputStream sourceStream) {
 		super(sourceStream);
-		try {
-			messageDigest = MessageDigest.getInstance(DEFAULT_DIGEST_ALGORITHM);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
+		messageDigest = MessageDigest.getInstance(DEFAULT_DIGEST_ALGORITHM);
 	}
 
 	public InputStreamWithDigest(InputStream sourceStream, MessageDigest messageDigest) {
@@ -36,7 +34,7 @@ public class InputStreamWithDigest extends ObservableInputStream implements IStr
 	
 	/**
 	 * Available only after the stream is closed, represents the value of the digest.
-	 * @return
+	 * @return The digest
 	 */
 	@Override
 	public byte[] getDigestValue() {

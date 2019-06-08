@@ -12,7 +12,7 @@ import java.util.List;
  * A stream that allow observing the position of read operations on another
  * stream.
  * 
- * @author Filippo
+ * @author filippo.possenti
  */
 public class ObservableInputStream extends InputStream implements IObservableStream, IStreamWithParent<InputStream> {
 
@@ -65,7 +65,9 @@ public class ObservableInputStream extends InputStream implements IObservableStr
 
 	@Override
 	public long skip(long n) throws IOException {
-		return sourceStream.skip(n);
+		long skipped = sourceStream.skip(n);
+		incrementProgress(skipped);
+		return skipped;
 	}
 
 	@Override
@@ -89,7 +91,6 @@ public class ObservableInputStream extends InputStream implements IObservableStr
 		if (!observers.contains(observer)) {
 			observers.add(observer);
 		}
-
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class ObservableInputStream extends InputStream implements IObservableStr
 
 	@Override
 	public synchronized void notifyObservers() {
-		notifyObservers(new StateInfo(0, null, null));
+		notifyObservers(new StateInfo(0, this, null));
 	}
 
 	@Override

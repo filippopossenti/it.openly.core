@@ -35,7 +35,7 @@ import javax.servlet.ServletContextListener;
  *     </filter-mapping>
  * }
  * 
- * @author Filippo
+ * @author filippo.possenti
  *
  */
 public class LogbackJNDIListener implements ServletContextListener {
@@ -46,7 +46,7 @@ public class LogbackJNDIListener implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent arg0) {
 		String override = System.getProperty("logbackjndilistener.disable");
-		if(override != null && "true".equalsIgnoreCase(override)) {
+		if("true".equalsIgnoreCase(override)) {
 			System.out.println("WARNING: logbackjndilistener.disable was set to true. You may need to add -Dlogback.ContextSelector=JNDI to your command line.");
 		}
 		else {

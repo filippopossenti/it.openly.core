@@ -2,9 +2,9 @@ package it.openly.core.data;
 
 /**
  * 
- * @author Filippo
- *
+ * @author filippo.possenti
  */
+@FunctionalInterface
 public interface IRowHandlerCallback<T> {
 	void handleRow(T row);
 }

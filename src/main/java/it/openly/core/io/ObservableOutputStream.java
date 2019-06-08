@@ -12,8 +12,7 @@ import java.util.List;
  * A stream that allow observing the position of write operations on another
  * stream.
  * 
- * @author Filippo
- * 
+ * @author filippo.possenti
  */
 public class ObservableOutputStream extends OutputStream implements IObservableStream, IStreamWithParent<OutputStream> {
 
@@ -81,7 +80,7 @@ public class ObservableOutputStream extends OutputStream implements IObservableS
 
 	@Override
 	public synchronized void notifyObservers() {
-		notifyObservers(new StateInfo(0, null, null));
+		notifyObservers(new StateInfo(0, this, null));
 	}
 
 	@Override
