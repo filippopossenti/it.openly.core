@@ -1,31 +1,29 @@
 package it.openly.core.io;
 
+import lombok.SneakyThrows;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * An output stream capable of calculating the digest of written data.
- * @author Filippo
  *
+ * @author filippo.possenti
  */
 public class OutputStreamWithDigest extends ObservableOutputStream implements IStreamWithDigest {
 
-	private MessageDigest messageDigest = null;
+	private MessageDigest messageDigest;
 	private byte[] digestValue = null;
-	
+
 	public OutputStreamWithDigest(OutputStream destStream) {
-		super(destStream);
-		try {
-			messageDigest = MessageDigest.getInstance(DEFAULT_DIGEST_ALGORITHM);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
+		this(destStream, null);
 	}
 
+	@SneakyThrows
 	public OutputStreamWithDigest(OutputStream destStream, MessageDigest messageDigest) {
 		super(destStream);
+		this.messageDigest = messageDigest != null ? messageDigest : MessageDigest.getInstance(DEFAULT_DIGEST_ALGORITHM);
 	}
 	
 	private synchronized void updateDigest(byte[] b, int off, int len) {

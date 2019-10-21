@@ -1,0 +1,1 @@
+select 1 from -- key01 -- dual

@@ -9,11 +9,12 @@ public interface IResourceResolver {
 	 * @return
 	 */
 	InputStream resolveResource(String resourceName);
-	InputStream resolveResource(String resourceName, boolean failIfNotExisting, boolean failIfManyExisting);
+
+	String resolveStringResource(String resourceName);
+
+	Boolean getFailIfNotExisting();
+	void setFailIfNotExisting(Boolean failIfNotExisting);
 	
-	boolean getFailIfNotExisting();
-	void setFailIfNotExisting(boolean failIfNotExisting);
-	
-	boolean getFailIfManyExisting();
-	void setFailIfManyExisting(boolean failIfManyExisting);
+	Boolean getFailIfManyExisting();
+	void setFailIfManyExisting(Boolean failIfManyExisting);
 }

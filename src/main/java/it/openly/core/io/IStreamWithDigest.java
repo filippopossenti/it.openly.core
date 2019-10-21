@@ -2,11 +2,14 @@ package it.openly.core.io;
 
 import java.security.MessageDigest;
 
+/**
+ * @author filippo.possenti
+ */
 public interface IStreamWithDigest {
 	
-	public final String DEFAULT_DIGEST_ALGORITHM = "SHA-256";
+	final String DEFAULT_DIGEST_ALGORITHM = "SHA-256";
 	
-	public byte[] getDigestValue();
+	byte[] getDigestValue();
 	
-	public MessageDigest getMessageDigest();
+	MessageDigest getMessageDigest();
 }

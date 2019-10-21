@@ -1,0 +1,1 @@
+select * from "cool_people" where idx = :IDX
