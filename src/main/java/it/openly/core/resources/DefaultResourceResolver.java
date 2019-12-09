@@ -4,6 +4,7 @@ import it.openly.core.exceptions.ResourceNotFoundException;
 import it.openly.core.exceptions.TooFewResultsException;
 import it.openly.core.exceptions.TooManyResultsException;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import lombok.Getter;
@@ -31,6 +32,14 @@ public class DefaultResourceResolver implements IResourceResolver {
 	private Boolean failIfNotExisting = true;
 	private Boolean failIfManyExisting = true;
 
+	@SneakyThrows
+	public boolean hasResource(String resourceName) {
+		ResourcePatternResolver resolver = getResourcePatternResolver();
+		String path = composePath(resourceName);
+		Resource[] resources = resolver.getResources(path);
+		return resources.length > 0;
+	}
+
 	@Override
 	@SneakyThrows
 	public InputStream resolveResource(String resourceName) {
@@ -53,7 +62,7 @@ public class DefaultResourceResolver implements IResourceResolver {
 	public String resolveStringResource(String resourceName) {
 		return IOUtils.toString(resolveResource(resourceName));
 	}
-	
+
 	private String composePath(String resourceName) {
 		String result = getBasePath();
 		if (!StringUtils.endsWith(result, "/"))

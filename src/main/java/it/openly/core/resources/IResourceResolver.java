@@ -3,6 +3,9 @@ package it.openly.core.resources;
 import java.io.InputStream;
 
 public interface IResourceResolver {
+
+	boolean hasResource(String resourceName);
+
 	/**
 	 * Resolves a resource for use by the application.
 	 * @param resourceName

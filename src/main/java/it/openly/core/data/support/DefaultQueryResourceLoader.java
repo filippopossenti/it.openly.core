@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 /**
  * This class allows loading queries from resources.
  * The path is composed based on a base path, combined with the database product as returned by the {@link DbProductDetector DbProductDetector} class.
+ * When there is no database-specific query, the class will combine the base path with the string "sql" and will try to load the query from there.
  *
  * @author filippo.possenti
  */
@@ -57,8 +58,10 @@ public class DefaultQueryResourceLoader implements IQueryResourceLoader {
     @Override
     public String loadQuery(@NonNull DataSource dataSource, @NonNull String namedQuery) {
         String detectedDbType = dbProductDetector.detectDbProduct(dataSource);
-        String namedQueryPath = FilenameUtils.concat(queriesBasePath, detectedDbType);
-        namedQueryPath = FilenameUtils.concat(namedQueryPath, namedQuery) + queryExtension;
+        String namedQueryPath = FilenameUtils.concat(FilenameUtils.concat(queriesBasePath, detectedDbType), namedQuery) + queryExtension;
+        if(!resourceResolver.hasResource(namedQueryPath)) {
+            namedQueryPath = FilenameUtils.concat(FilenameUtils.concat(queriesBasePath, "sql"), namedQuery) + queryExtension;
+        }
         return resourceResolver.resolveStringResource(namedQueryPath);
     }
 }

@@ -118,9 +118,10 @@ public class Query {
 
 	/**
 	 * Executes a statement.
+	 * @return A boolean
 	 */
-	public final void execute() {
-		execute(PreparedStatement::execute);
+	public final boolean execute() {
+		return execute(PreparedStatement::execute);
 	}
 
 	/**
@@ -128,9 +129,10 @@ public class Query {
 	 * {@link PreparedStatement#execute() PreparedStatement.execute} method.
 	 * @param preparedStatementCallback The callback
 	 * @param <T>
+	 * @return The execution's result
 	 */
-	public final <T> void execute(PreparedStatementCallback<T> preparedStatementCallback) {
-		namedParameterJdbcTemplate.execute(sqlStatement, context, preparedStatementCallback);
+	public final <T> T execute(PreparedStatementCallback<T> preparedStatementCallback) {
+		return namedParameterJdbcTemplate.execute(sqlStatement, context, preparedStatementCallback);
 	}
 
 	/**
