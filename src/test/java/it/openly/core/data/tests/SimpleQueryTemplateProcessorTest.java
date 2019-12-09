@@ -1,5 +1,6 @@
 package it.openly.core.data.tests;
 
+import it.openly.core.data.ProcessedTemplate;
 import it.openly.core.data.support.SimpleQueryTemplateProcessor;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
@@ -38,6 +39,7 @@ public class SimpleQueryTemplateProcessorTest {
         context.put("key14", "value14");
         context.put("key15", 5345L);
         context.put("key16", false);
+        context.put("key17", new Object[] { "value17a", "value17b" });
 
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] resources = resolver.getResources("classpath*:/simplequerytemplateprocessortest/templatequeries/*.txt");
@@ -67,9 +69,9 @@ public class SimpleQueryTemplateProcessorTest {
         // given
 
         // when
-        String actualOutputString = simpleQueryTemplateProcessor.processTemplate(inputTemplate, context);
+        ProcessedTemplate processedTemplate = simpleQueryTemplateProcessor.processTemplate(inputTemplate, context);
 
         // then
-        assertThat(actualOutputString, equalTo(expectedOutputString));
+        assertThat(processedTemplate.getSql(), equalTo(expectedOutputString));
     }
 }

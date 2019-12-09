@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Provides facilities to detect the database product that is backing a specific {@link javax.sql.DataSource DataSource}.
+ * Provides facilities to detect the database product that is backing a specific {@link javax.sql.DataSource DataSource}.<br/>
  * A default list of database products is provided within the library. Alternatively, a custom list can be specified
  * using the appropriate constructor.
  *

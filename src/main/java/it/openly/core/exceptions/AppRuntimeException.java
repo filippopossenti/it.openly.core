@@ -1,7 +1,7 @@
 package it.openly.core.exceptions;
 
 /**
- * A specialised runtime exception that allow passing arguments.
+ * A specialised runtime exception that allow passing arguments.<br/>
  * The arguments are meant to be the arguments of the function that raised the exception or other information useful
  * to return meaningful error messages.
  * 

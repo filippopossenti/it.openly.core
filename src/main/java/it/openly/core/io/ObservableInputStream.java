@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A stream that allow observing the position of read operations on another
- * stream.
+ * A stream that allow observing the position of read operations on another stream.
  * 
  * @author filippo.possenti
  */
