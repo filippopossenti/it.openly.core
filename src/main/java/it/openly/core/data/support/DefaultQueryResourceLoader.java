@@ -9,7 +9,7 @@ import org.apache.commons.io.FilenameUtils;
 import javax.sql.DataSource;
 
 /**
- * This class allows loading queries from resources.
+ * This class allows loading queries from resources.<br/>
  * The path is composed based on a base path, combined with the database product as returned by the {@link DbProductDetector DbProductDetector} class.
  *
  * @author filippo.possenti

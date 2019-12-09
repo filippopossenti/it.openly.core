@@ -6,5 +6,5 @@ import java.util.Map;
  * @author filippo.possenti
  */
 public interface ITemplateProcessor {
-	String processTemplate(String templateText, Map<String, Object> context);
+	ProcessedTemplate processTemplate(String templateText, Map<String, Object> context);
 }

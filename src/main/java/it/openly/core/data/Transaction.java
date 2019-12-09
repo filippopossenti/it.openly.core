@@ -9,7 +9,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import javax.sql.DataSource;
 
 /**
- * Convenience class to manually manage transactions.
+ * Convenience class to manually manage transactions.<br/>
  * Note that transactions dealt with this class may cause problems if transactionality is already
  * being managed by Spring's own facilities.
  *
@@ -46,7 +46,7 @@ public class Transaction {
 	}
 
 	/**
-	 * Marks a transaction as rollback-only.
+	 * Marks a transaction as rollback-only.<br/>
 	 * When calling the {@link #rollback() rollback} method everything will work correctly in this case, whereas calling the
 	 * {@link #commit() commit} method will result in a {@link it.openly.core.exceptions.RollbackOnlyException RollbackOnlyException} exception being thrown.
 	 */

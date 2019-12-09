@@ -16,8 +16,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * A class meant to be used for basic AOP-based logging using Spring and AspectJ.
- * 
+ * A class meant to be used for basic AOP-based logging using Spring and AspectJ.<br/>
+ * <br/>
  * Methods included in this class allow to ease logging operations and add some useful context
  * to it.<br/>
  * Typical use will involve putting the following in a spring configuration file (say aop-context.xml):<br/>
@@ -29,7 +29,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  *       <aop:around method="logAround" pointcut-ref="pointCutAround"  />
  *      </aop:aspect>
  *     </aop:config>
- * }
+ * }<br/>
  * Then, writing this in the spring configuration file creating your beans:<br/>
  * {@code
  *     <beans:import resource="aop-context.xml" />

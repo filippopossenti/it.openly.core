@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 /**
  * The main entry point object for this package. This class allows to easily execute native queries
- * based off a template, typically stored as a separate .sql file somewhere on the classpath.
+ * based off a template, typically stored as a separate .sql file somewhere on the classpath.<br/>
  * By default, an instance of this class will process queries living in classpath:/queries/[dbproduct]/**.sql
  * using the embedded {@link it.openly.core.data.support.SimpleQueryTemplateProcessor SimpleQueryTemplateProcessor} class
  * to alter the queries based on the provided contexts.
@@ -36,7 +36,7 @@ public class QueryFactory {
     }
 
     /**
-     * Configures and returns a Transaction object that can be used to executes subsequent queries transactionally.
+     * Configures and returns a Transaction object that can be used to executes subsequent queries transactionally.<br/>
      * Note that the use of this facility should be used with Spring's embedded transaction management facilities in
      * a mutually exclusive way.
      * @return A {@link Transaction Transaction} object, linked to the current datasource.
@@ -66,8 +66,8 @@ public class QueryFactory {
     @SafeVarargs
     public final Query createQueryFromTemplate(String sqlStatementTemplate, Map<String, Object>... contexts) {
         Map<String, Object> context = Stream.of(contexts).flatMap(map -> map.entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        String sql = templateProcessor.processTemplate(sqlStatementTemplate, context);
-        return new Query(new NamedParameterJdbcTemplate(dataSource), sql, context);
+        ProcessedTemplate processedTemplate = templateProcessor.processTemplate(sqlStatementTemplate, context);
+        return new Query(new NamedParameterJdbcTemplate(dataSource), processedTemplate.getSql(), processedTemplate.getContext());
     }
 
     /**
@@ -82,10 +82,10 @@ public class QueryFactory {
     }
 
     /**
-     * Executes a query and returns a list of beans of the specified type.
-     * The columns are converted according to spring's {@link org.springframework.jdbc.core.BeanPropertyRowMapper BeanPropertyRowMapper} rules.
+     * Executes a query and returns a list of beans of the specified type.<br/>
+     * The columns are converted according to spring's {@link org.springframework.jdbc.core.BeanPropertyRowMapper BeanPropertyRowMapper} rules.<br/>
      * It's important to remember that this framework is not meant to handle relationships, meaning that the bean is expected
-     * to contain only primitive (eventually boxed) types.
+     * to contain only primitive (eventually boxed) types.<br/>
      * @param namedQuery The named query name. The name is defined as a relative path from the classpath:/queries/[dbproduct] path, without the ./sql extension. For example: "hello/world" will try to load the classpath:/queries/[dbproduct]/hello/world.sql file.
      * @param clazz The bean's class.
      * @param contexts A variable number of {@link java.util.Map Map} objects containing the variables driving the query. Having multiple Map objects allows to more easily separate parameters, for example filter parameters could be in one Map and paging parameters in another Map.
@@ -145,8 +145,8 @@ public class QueryFactory {
     }
 
     /**
-     * Executes a query and returns a bean of the specified type.
-     * The columns are converted according to spring's {@link org.springframework.jdbc.core.BeanPropertyRowMapper BeanPropertyRowMapper} rules.
+     * Executes a query and returns a bean of the specified type.<br/>
+     * The columns are converted according to spring's {@link org.springframework.jdbc.core.BeanPropertyRowMapper BeanPropertyRowMapper} rules.<br/>
      * It's important to remember that this framework is not meant to handle relationships, meaning that the bean is expected
      * to contain only primitive (eventually boxed) types.
      * @param namedQuery The named query name. The name is defined as a relative path from the classpath:/queries/[dbproduct] path, without the ./sql extension. For example: "hello/world" will try to load the classpath:/queries/[dbproduct]/hello/world.sql file.

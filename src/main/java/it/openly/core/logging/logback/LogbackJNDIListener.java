@@ -4,15 +4,15 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- * Listener meant to add a parameter needed to initialise Logback properly in this application.
- * In order for it to work, you have to add a listener in your web.xml file, as follows:
+ * Listener meant to add a parameter needed to initialise Logback properly in this application.<br/>
+ * In order for it to work, you have to add a listener in your web.xml file, as follows:<br/>
  * {@code
  *     <listener>
  *         <listener-class>it.openly.core.logging.logback.LogbackJNDIListener</listener-class>
  *     </listener>
  * }
  * Note that the listener must be added before the other ones related to Logback. Here follows
- * a more complete example:
+ * a more complete example:<br/>
  * {@code
  *     <env-entry>
  *         <env-entry-name>logback/context-name</env-entry-name>

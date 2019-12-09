@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.Map;
 
 import it.openly.core.data.ITemplateProcessor;
+import it.openly.core.data.ProcessedTemplate;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.velocity.VelocityContext;
@@ -15,14 +16,14 @@ import org.apache.velocity.app.VelocityEngine;
  *
  * @author filippo.possenti
  */
-public class VelocityTemplateProcessor implements ITemplateProcessor {
+public class VelocityQueryTemplateProcessor implements ITemplateProcessor {
 	private VelocityEngine velocityEngine;
 
-	public VelocityTemplateProcessor(VelocityEngine velocityEngine) {
+	public VelocityQueryTemplateProcessor(VelocityEngine velocityEngine) {
 		this.velocityEngine = velocityEngine;
 	}
 	
-	public VelocityTemplateProcessor() {
+	public VelocityQueryTemplateProcessor() {
 		this(new VelocityEngine());
 	}
 
@@ -34,12 +35,15 @@ public class VelocityTemplateProcessor implements ITemplateProcessor {
 	 */
 	@Override
 	@SneakyThrows
-	public String processTemplate(@NonNull String templateText, Map<String, Object> context) {
+	public ProcessedTemplate processTemplate(@NonNull String templateText, Map<String, Object> context) {
+		ProcessedTemplate processedTemplate = new ProcessedTemplate();
 		try(StringWriter writer = new StringWriter();
 			StringReader reader = new StringReader(templateText)
 		) {
 			velocityEngine.evaluate(new VelocityContext(context), writer, "template", reader);
-			return writer.toString();
+			processedTemplate.setSql(writer.toString());
+			processedTemplate.setContext(context);
+			return processedTemplate;
 		}
 	}
 }

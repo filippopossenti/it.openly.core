@@ -48,10 +48,10 @@ public class Query {
 	}
 
 	/**
-	 * Executes a query and returns a list of beans of the specified type.
-	 * The columns are converted according to spring's {@link org.springframework.jdbc.core.BeanPropertyRowMapper BeanPropertyRowMapper} rules.
+	 * Executes a query and returns a list of beans of the specified type.<br/>
+	 * The columns are converted according to spring's {@link org.springframework.jdbc.core.BeanPropertyRowMapper BeanPropertyRowMapper} rules.<br/>
 	 * It's important to remember that this framework is not meant to handle relationships, meaning that the bean is expected
-	 * to contain only primitive (eventually boxed) types.
+	 * to contain only primitive (eventually boxed) types.<br/>
 	 * @param clazz The bean's class.
 	 * @param <T> The type.
 	 * @return A list of beans.
@@ -78,7 +78,7 @@ public class Query {
 
 	/**
 	 * Executes a query and returns an object. Note that in this case the object is expected to be
-	 * a primitive (possibly boxed) java type. Beans are not allowed.
+	 * a primitive (possibly boxed) java type. Beans are not allowed.<br/>
 	 * @param clazz The object type
 	 * @param <T> The type
 	 * @return The object
@@ -96,10 +96,10 @@ public class Query {
 	}
 
 	/**
-	 * Executes a query and returns a bean of the specified type.
-	 * The columns are converted according to spring's {@link org.springframework.jdbc.core.BeanPropertyRowMapper BeanPropertyRowMapper} rules.
+	 * Executes a query and returns a bean of the specified type.<br/>
+	 * The columns are converted according to spring's {@link org.springframework.jdbc.core.BeanPropertyRowMapper BeanPropertyRowMapper} rules.<br/>
 	 * It's important to remember that this framework is not meant to handle relationships, meaning that the bean is expected
-	 * to contain only primitive (eventually boxed) types.
+	 * to contain only primitive (eventually boxed) types.<br/>
 	 * @param clazz The bean's class.
 	 * @param <T> The type.
 	 * @return A bean.
