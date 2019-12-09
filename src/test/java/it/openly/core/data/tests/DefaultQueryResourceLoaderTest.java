@@ -41,6 +41,7 @@ public class DefaultQueryResourceLoaderTest {
         DefaultQueryResourceLoader defaultQueryResourceLoader = new DefaultQueryResourceLoader(resourceResolver, dbProductDetector, basepath, "");
 
         when(dbProductDetector.detectDbProduct(eq(dataSource))).thenReturn(dbtype);
+        when(resourceResolver.hasResource(eq(FilenameUtils.concat(FilenameUtils.concat(basepath, dbtype), queryname)))).thenReturn(true);
         when(resourceResolver.resolveStringResource(eq(FilenameUtils.concat(FilenameUtils.concat(basepath, dbtype), queryname)))).thenReturn(expectedQueryText);
 
         // when
@@ -50,4 +51,27 @@ public class DefaultQueryResourceLoaderTest {
         assertThat(actual, equalTo(expectedQueryText));
 
     }
+
+    @Test
+    public void testLoadQueryDefaultResource() {
+        // given
+        String basepath = UUID.randomUUID().toString();
+        String dbtype = UUID.randomUUID().toString();
+        String queryname = UUID.randomUUID().toString();
+        String expectedQueryText = UUID.randomUUID().toString();
+
+        DefaultQueryResourceLoader defaultQueryResourceLoader = new DefaultQueryResourceLoader(resourceResolver, dbProductDetector, basepath, "");
+
+        when(dbProductDetector.detectDbProduct(eq(dataSource))).thenReturn(dbtype);
+        when(resourceResolver.hasResource(eq(FilenameUtils.concat(FilenameUtils.concat(basepath, dbtype), queryname)))).thenReturn(false);
+        when(resourceResolver.resolveStringResource(eq(FilenameUtils.concat(FilenameUtils.concat(basepath, "sql"), queryname)))).thenReturn(expectedQueryText);
+
+        // when
+        String actual = defaultQueryResourceLoader.loadQuery(dataSource, queryname);
+
+        // then
+        assertThat(actual, equalTo(expectedQueryText));
+
+    }
+
 }
