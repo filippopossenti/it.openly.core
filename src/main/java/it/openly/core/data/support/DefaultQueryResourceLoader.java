@@ -20,20 +20,17 @@ public class DefaultQueryResourceLoader implements IQueryResourceLoader {
     private final IResourceResolver resourceResolver;
     private final DbProductDetector dbProductDetector;
     private final String queriesBasePath;
-    private final String queryExtension;
 
     /**
      * Creates an instance of the class, specifying all parameters that drive the resolution of the resource to be loaded.
      * @param resourceResolver The resource resolver that will be tasked with loading the resource.
      * @param dbProductDetector The {@link DbProductDetector DbProductDetector} in charge of detecting the database product for path composition.
      * @param queriesBasePath The base path to the queries.
-     * @param queryExtension The extension, if any (including the dot) for each query resource.
      */
-    public DefaultQueryResourceLoader(IResourceResolver resourceResolver, DbProductDetector dbProductDetector, String queriesBasePath, String queryExtension) {
+    public DefaultQueryResourceLoader(IResourceResolver resourceResolver, DbProductDetector dbProductDetector, String queriesBasePath) {
         this.resourceResolver = resourceResolver;
         this.dbProductDetector = dbProductDetector;
         this.queriesBasePath = queriesBasePath;
-        this.queryExtension = queryExtension;
     }
 
     /**
@@ -46,7 +43,7 @@ public class DefaultQueryResourceLoader implements IQueryResourceLoader {
      * </ul>
      */
     public DefaultQueryResourceLoader() {
-        this(new DefaultResourceResolver(), new DbProductDetector(), "queries", ".sql");
+        this(new DefaultResourceResolver(), new DbProductDetector(), "queries");
     }
 
     /**
@@ -58,9 +55,9 @@ public class DefaultQueryResourceLoader implements IQueryResourceLoader {
     @Override
     public String loadQuery(@NonNull DataSource dataSource, @NonNull String namedQuery) {
         String detectedDbType = dbProductDetector.detectDbProduct(dataSource);
-        String namedQueryPath = FilenameUtils.concat(FilenameUtils.concat(queriesBasePath, detectedDbType), namedQuery) + queryExtension;
+        String namedQueryPath = FilenameUtils.concat(FilenameUtils.concat(queriesBasePath, detectedDbType), namedQuery);
         if(!resourceResolver.hasResource(namedQueryPath)) {
-            namedQueryPath = FilenameUtils.concat(FilenameUtils.concat(queriesBasePath, "sql"), namedQuery) + queryExtension;
+            namedQueryPath = FilenameUtils.concat(FilenameUtils.concat(queriesBasePath, "sql"), namedQuery);
         }
         return resourceResolver.resolveStringResource(namedQueryPath);
     }

@@ -216,16 +216,18 @@ public class QueryTest {
     public void testExecuteCallsJdbcTemplateWithCorrectArguments() {
         // given
         String sql = "select 1";
+        when(namedParameterJdbcTemplate.execute(anyString(), anyMap(), any())).thenReturn(true);
 
         // when
         Query query = new Query(namedParameterJdbcTemplate, sql, context);
-        query.execute();
+        boolean result = query.execute();
 
         // then
         ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map<String, Object>> arg2 = ArgumentCaptor.forClass(Map.class);
         verify(namedParameterJdbcTemplate, times(1)).execute(arg1.capture(), arg2.capture(), any());
         assertThat(arg1.getValue(), equalTo(sql));
+        assertThat(result, is(true));
         checkContextParameters(arg2);
     }
 
