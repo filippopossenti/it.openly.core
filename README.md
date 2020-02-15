@@ -1,4 +1,4 @@
-# it.openly.core
+# it.openly.core    ![Java CI](https://github.com/filippopossenti/it.openly.core/workflows/Java%20CI/badge.svg)
 
 ## Description
 
