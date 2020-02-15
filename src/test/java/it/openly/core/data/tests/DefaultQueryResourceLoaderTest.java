@@ -38,7 +38,7 @@ public class DefaultQueryResourceLoaderTest {
         String queryname = UUID.randomUUID().toString();
         String expectedQueryText = UUID.randomUUID().toString();
 
-        DefaultQueryResourceLoader defaultQueryResourceLoader = new DefaultQueryResourceLoader(resourceResolver, dbProductDetector, basepath, "");
+        DefaultQueryResourceLoader defaultQueryResourceLoader = new DefaultQueryResourceLoader(resourceResolver, dbProductDetector, basepath);
 
         when(dbProductDetector.detectDbProduct(eq(dataSource))).thenReturn(dbtype);
         when(resourceResolver.hasResource(eq(FilenameUtils.concat(FilenameUtils.concat(basepath, dbtype), queryname)))).thenReturn(true);
@@ -60,7 +60,7 @@ public class DefaultQueryResourceLoaderTest {
         String queryname = UUID.randomUUID().toString();
         String expectedQueryText = UUID.randomUUID().toString();
 
-        DefaultQueryResourceLoader defaultQueryResourceLoader = new DefaultQueryResourceLoader(resourceResolver, dbProductDetector, basepath, "");
+        DefaultQueryResourceLoader defaultQueryResourceLoader = new DefaultQueryResourceLoader(resourceResolver, dbProductDetector, basepath);
 
         when(dbProductDetector.detectDbProduct(eq(dataSource))).thenReturn(dbtype);
         when(resourceResolver.hasResource(eq(FilenameUtils.concat(FilenameUtils.concat(basepath, dbtype), queryname)))).thenReturn(false);

@@ -68,14 +68,14 @@ public class TransactionTest {
         // given
         int idx = 3;
         double rating = 123.4;
-        double expectedRating = ((Number)queryFactory.queryForMap("get", map("IDX", idx)).get("RATING")).doubleValue();
+        double expectedRating = ((Number)queryFactory.queryForMap("get.sql", map("IDX", idx)).get("RATING")).doubleValue();
 
         // when
         Transaction transaction = queryFactory.getTransaction();
-        int affectedRows = queryFactory.update("update", map("IDX", idx, "RATING", rating));
-        Map<String, Object> changedValue = queryFactory.queryForMap("get", map("IDX", idx));
+        int affectedRows = queryFactory.update("update.sql", map("IDX", idx, "RATING", rating));
+        Map<String, Object> changedValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
         transaction.rollback();
-        Map<String, Object> actualValue = queryFactory.queryForMap("get", map("IDX", idx));
+        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
 
         // then
         assertThat(affectedRows, is(1));
@@ -91,9 +91,9 @@ public class TransactionTest {
 
         // when
         Transaction transaction = queryFactory.getTransaction();
-        int affectedRows = queryFactory.update("update", map("IDX", idx, "RATING", rating));
+        int affectedRows = queryFactory.update("update.sql", map("IDX", idx, "RATING", rating));
         transaction.commit();
-        Map<String, Object> actualValue = queryFactory.queryForMap("get", map("IDX", idx));
+        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
 
         // then
         assertThat(affectedRows, is(1));
@@ -105,13 +105,13 @@ public class TransactionTest {
         // given
         int idx = 3;
         double rating = 123.4;
-        double expectedRating = ((Number)queryFactory.queryForMap("get", map("IDX", idx)).get("RATING")).doubleValue();
+        double expectedRating = ((Number)queryFactory.queryForMap("get.sql", map("IDX", idx)).get("RATING")).doubleValue();
 
         // when
         Transaction transaction = queryFactory.getTransaction();
         transaction.setRollbackOnly();
-        int affectedRows = queryFactory.update("update", map("IDX", idx, "RATING", rating));
-        Map<String, Object> changedValue = queryFactory.queryForMap("get", map("IDX", idx));
+        int affectedRows = queryFactory.update("update.sql", map("IDX", idx, "RATING", rating));
+        Map<String, Object> changedValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
         try {
             transaction.commit();
             fail("RollbackOnlyException was not thrown.");
@@ -119,7 +119,7 @@ public class TransactionTest {
         catch (RollbackOnlyException roe) {
             // empty on purpose
         }
-        Map<String, Object> actualValue = queryFactory.queryForMap("get", map("IDX", idx));
+        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
 
         // then
         assertThat(affectedRows, is(1));
