@@ -15,7 +15,7 @@
 		<spring.security.version>5.2.10.RELEASE</spring.security.version>
 		<aspectj.version>1.8.4</aspectj.version>
 		<commons.io.version>2.7</commons.io.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<stringtemplate.version>4.0.8</stringtemplate.version>
 		<velocity.version>1.7</velocity.version>
 		<servlet.version>2.5</servlet.version>
