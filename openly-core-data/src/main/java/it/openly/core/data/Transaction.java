@@ -17,8 +17,8 @@ import javax.sql.DataSource;
  */
 public class Transaction {
 
-	private TransactionStatus txStatus;
-	private DataSourceTransactionManager transactionManager;
+	private final TransactionStatus txStatus;
+	private final DataSourceTransactionManager transactionManager;
 	private boolean rollbackOnly = false;
 
 	public Transaction(@NonNull DataSource dataSource) {

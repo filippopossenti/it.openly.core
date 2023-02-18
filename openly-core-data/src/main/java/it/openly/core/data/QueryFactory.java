@@ -21,9 +21,9 @@ import java.util.stream.Stream;
  * @author filippo.possenti
  */
 public class QueryFactory {
-    private ITemplateProcessor templateProcessor;
-    private DataSource dataSource;
-    private IQueryResourceLoader queryResourceLoader;
+    private final ITemplateProcessor templateProcessor;
+    private final DataSource dataSource;
+    private final IQueryResourceLoader queryResourceLoader;
 
     public QueryFactory(DataSource dataSource, ITemplateProcessor templateProcessor, IQueryResourceLoader queryResourceLoader) {
         this.templateProcessor = templateProcessor;

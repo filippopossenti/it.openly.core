@@ -24,10 +24,10 @@ import java.util.Properties;
 public class DbProductDetector {
     private static final String DEFAULT_PROPERTIES_PATH = "it/openly/core/data/database-types.properties";
 
-    private Map<DataSource, String> dataSourceDbTypesCache;
+    private final Map<DataSource, String> dataSourceDbTypesCache;
 
     @Getter
-    private Map<String, String> databaseTypes;
+    private final Map<String, String> databaseTypes;
 
     /**
      * Creates an instance of the object, allowing to specify a set of properties representing the list of known

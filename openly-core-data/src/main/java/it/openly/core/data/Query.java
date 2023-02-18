@@ -21,9 +21,9 @@ import java.util.Map;
 @Slf4j
 public class Query {
 
-	private String sqlStatement;
-	private Map<String, ?> context;
-	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	private final String sqlStatement;
+	private final Map<String, ?> context;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	public Query(@NonNull NamedParameterJdbcTemplate namedParameterJdbcTemplate, @NonNull String sqlStatement, Map<String, ?> context) {
 		this.sqlStatement = sqlStatement;
@@ -57,12 +57,12 @@ public class Query {
 	 * @return A list of beans.
 	 */
 	public final <T> List<T> queryForBeans(Class<T> clazz) {
-		return namedParameterJdbcTemplate.query(sqlStatement, new MapSqlParameterSource(context), new BeanPropertyRowMapper<T>(clazz));
+		return namedParameterJdbcTemplate.query(sqlStatement, new MapSqlParameterSource(context), new BeanPropertyRowMapper<>(clazz));
 	}
 
 	/**
 	 * Executes a query and returns an integer
-	 * @return
+	 * @return An integer value
 	 */
 	public final int queryForInt() {
 		return queryForObject(Integer.class);
@@ -70,7 +70,7 @@ public class Query {
 
 	/**
 	 * Executes a query and returns a long
-	 * @return
+	 * @return A long value
 	 */
 	public final long queryForLong() {
 		return queryForObject(Long.class);
@@ -105,7 +105,7 @@ public class Query {
 	 * @return A bean.
 	 */
 	public final <T> T queryForBean(Class<T> clazz) {
-		return namedParameterJdbcTemplate.queryForObject(sqlStatement, new MapSqlParameterSource(context), new BeanPropertyRowMapper<T>(clazz));
+		return namedParameterJdbcTemplate.queryForObject(sqlStatement, new MapSqlParameterSource(context), new BeanPropertyRowMapper<>(clazz));
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class Query {
 	 * Executes a statement using the provided callback to drive execution. Don't forget to call the
 	 * {@link PreparedStatement#execute() PreparedStatement.execute} method.
 	 * @param preparedStatementCallback The callback
-	 * @param <T>
+	 * @param <T> The result type
 	 * @return The execution's result
 	 */
 	public final <T> T execute(PreparedStatementCallback<T> preparedStatementCallback) {
@@ -143,7 +143,7 @@ public class Query {
 	 */
 	public final void iterate(final IRowHandlerCallback<Map<String, Object>> callback) {
 		query(new RowCallbackHandler() {
-			ColumnMapRowMapper mapper = new ColumnMapRowMapper();
+			final ColumnMapRowMapper mapper = new ColumnMapRowMapper();
 
 			@Override
 			public void processRow(ResultSet rs) throws SQLException {
@@ -158,11 +158,11 @@ public class Query {
 	 * being processed.
 	 * @param clazz The class of the beans for processing
 	 * @param callback The callback
-	 * @param <T>
+	 * @param <T> The class of the pojo bean that will be used when iterating
 	 */
 	public final <T> void iterate(Class<T> clazz, final IRowHandlerCallback<T> callback) {
 		query(new RowCallbackHandler() {
-			BeanPropertyRowMapper<T> mapper = new BeanPropertyRowMapper<>(clazz);
+			final BeanPropertyRowMapper<T> mapper = new BeanPropertyRowMapper<>(clazz);
 
 			@Override
 			public void processRow(ResultSet rs) throws SQLException {

@@ -17,7 +17,7 @@ import org.apache.velocity.app.VelocityEngine;
  * @author filippo.possenti
  */
 public class VelocityQueryTemplateProcessor implements ITemplateProcessor {
-	private VelocityEngine velocityEngine;
+	private final VelocityEngine velocityEngine;
 
 	public VelocityQueryTemplateProcessor(VelocityEngine velocityEngine) {
 		this.velocityEngine = velocityEngine;
