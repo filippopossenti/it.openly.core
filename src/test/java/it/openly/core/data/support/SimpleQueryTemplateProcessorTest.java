@@ -1,29 +1,34 @@
 package it.openly.core.data.support;
 
 import it.openly.core.data.ProcessedTemplate;
-import it.openly.core.data.support.SimpleQueryTemplateProcessor;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.util.*;
+import java.util.stream.Stream;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
-public class SimpleQueryTemplateProcessorTest {
+
+class SimpleQueryTemplateProcessorTest {
 
     SimpleQueryTemplateProcessor simpleQueryTemplateProcessor = new SimpleQueryTemplateProcessor(true);
 
-    @Parameterized.Parameters(name="{index}: {0}")
     @SneakyThrows
-    public static Iterable<Object[]> data() {
+    private static Stream<Arguments> provideArguments() {
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath*:/simplequerytemplateprocessortest/templatequeries/*.txt");
+        return Stream.of(resources).map(Arguments::of);
+    }
+
+    private Map<String, Object> prepareContext() {
         Map<String, Object> context = new HashMap<>();
         context.put("key01", "value01");
         context.put("key02", "value02");
@@ -40,38 +45,35 @@ public class SimpleQueryTemplateProcessorTest {
         context.put("key15", 5345L);
         context.put("key16", false);
         context.put("key17", new Object[] { "value17a", "value17b" });
+        context.put("key18", Arrays.asList("value18a", "value18b", "value18c"));
+        return context;
+    }
 
+    @SneakyThrows
+    private String loadInputTemplateText(Resource resource) {
+        return IOUtils.toString(resource.getInputStream());
+    }
+
+    @SneakyThrows
+    private String loadExpectationText(Resource resource) {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource[] resources = resolver.getResources("classpath*:/simplequerytemplateprocessortest/templatequeries/*.txt");
-        List<Object[]> data = new ArrayList<>();
-        for(Resource r : resources) {
-            System.out.println("Preparing scenario for query: " + r.getFilename());
-            Resource[] exp = resolver.getResources("classpath*:/simplequerytemplateprocessortest/templatequeries/"+ r.getFilename() + ".expectation");
-            String template = IOUtils.toString(r.getInputStream());
-            String expectation = IOUtils.toString(exp[0].getInputStream());
-            data.add(new Object[] { r.getFilename(), template, expectation, context });
-        }
-        return data;
+        Resource[] exp = resolver.getResources("classpath*:/simplequerytemplateprocessortest/templatequeries/"+ resource.getFilename() + ".expectation");
+        return IOUtils.toString(exp[0].getInputStream());
     }
 
-    private final String inputTemplate;
-    private final String expectedOutputString;
-    private final Map<String, Object> context;
+    @ParameterizedTest
+    @MethodSource("provideArguments")
+    @DisplayName("Processing of queries using the simple embedded engine")
+    void testProcessTemplate(Resource inputTemplateResource) {
+        // Given: an input template and an expected result as well as a bunch key/values as context for the query
+        String inputTemplate = loadInputTemplateText(inputTemplateResource);
+        String expectedOutputString = loadExpectationText(inputTemplateResource);
+        Map<String, Object> context = prepareContext();
 
-    public SimpleQueryTemplateProcessorTest(String filename, String input, String output, Map<String, Object> ctx) {
-        inputTemplate = input;
-        expectedOutputString = output;
-        context = ctx;
-    }
-
-    @Test
-    public void testProcessTemplate() {
-        // given
-
-        // when
+        // When: I process the template
         ProcessedTemplate processedTemplate = simpleQueryTemplateProcessor.processTemplate(inputTemplate, context);
 
-        // then
-        assertThat(processedTemplate.getSql(), equalTo(expectedOutputString));
+        // Then: the produced template text matches the expectation
+        assertEquals(expectedOutputString, processedTemplate.getSql());
     }
 }

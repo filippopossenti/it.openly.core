@@ -4,11 +4,12 @@ import com.zaxxer.hikari.HikariDataSource;
 import it.openly.core.exceptions.RollbackOnlyException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -20,18 +21,17 @@ import java.util.Map;
 
 import static it.openly.core.test.TestUtils.dt;
 import static it.openly.core.test.TestUtils.map;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TransactionTest {
-    private static List<Map<String, Object>> people = new ArrayList<>();
+@ExtendWith(MockitoExtension.class)
+class TransactionTest {
+    private static final List<Map<String, Object>> people = new ArrayList<>();
     private static DataSource dataSource;
 
     private QueryFactory queryFactory;
 
-    @BeforeClass
+    @BeforeAll
     @SneakyThrows
     public static void prepareDataSource() {
         HikariDataSource hds = new HikariDataSource();
@@ -55,14 +55,15 @@ public class TransactionTest {
         jt.update(insert_sql, people.get(3));
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         queryFactory = new QueryFactory(dataSource);
     }
 
 
     @Test
-    public void testRollback() {
+    @DisplayName("rollback: rolls back the transaction after some changes have been made")
+    void testRollback() {
         // given
         int idx = 3;
         double rating = 123.4;
@@ -76,13 +77,14 @@ public class TransactionTest {
         Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
 
         // then
-        assertThat(affectedRows, is(1));
-        assertThat(((Number)changedValue.get("RATING")).doubleValue(), is(rating));
-        assertThat(((Number)actualValue.get("RATING")).doubleValue(), is(expectedRating));
+        assertEquals(1, affectedRows);
+        assertEquals(rating, ((Number)changedValue.get("RATING")).doubleValue());
+        assertEquals(expectedRating, ((Number)actualValue.get("RATING")).doubleValue());
     }
 
     @Test
-    public void testCommit() {
+    @DisplayName("commit: commits the transation after changes have been made")
+    void testCommit() {
         // given
         int idx = 3;
         double rating = 123.4;
@@ -94,12 +96,13 @@ public class TransactionTest {
         Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
 
         // then
-        assertThat(affectedRows, is(1));
-        assertThat(((Number)actualValue.get("RATING")).doubleValue(), is(rating));
+        assertEquals(1, affectedRows);
+        assertEquals(rating, ((Number)actualValue.get("RATING")).doubleValue());
     }
 
     @Test
-    public void testRollbackOnly() {
+    @DisplayName("rollbackOnly: throws an exception when the commit method is called and the transaction is not committed")
+    void testRollbackOnly() {
         // given
         int idx = 3;
         double rating = 123.4;
@@ -120,9 +123,9 @@ public class TransactionTest {
         Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
 
         // then
-        assertThat(affectedRows, is(1));
-        assertThat(((Number)changedValue.get("RATING")).doubleValue(), is(rating));
-        assertThat(((Number)actualValue.get("RATING")).doubleValue(), is(expectedRating));
+        assertEquals(1, affectedRows);
+        assertEquals(rating, ((Number)changedValue.get("RATING")).doubleValue());
+        assertEquals(expectedRating, ((Number)actualValue.get("RATING")).doubleValue());
     }
 
 }

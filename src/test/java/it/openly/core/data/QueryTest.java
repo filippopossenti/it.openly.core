@@ -3,13 +3,14 @@ package it.openly.core.data;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -20,13 +21,12 @@ import java.util.*;
 
 import static it.openly.core.test.TestUtils.dt;
 import static it.openly.core.test.TestUtils.map;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class QueryTest {
 
     @Mock
@@ -34,11 +34,11 @@ public class QueryTest {
 
     private static DataSource dataSource;
 
-    private Map<String, Object> context = new HashMap<>();
+    private final Map<String, Object> context = new HashMap<>();
 
-    private static List<Map<String, Object>> people = new ArrayList<>();
+    private static final List<Map<String, Object>> people = new ArrayList<>();
 
-    @BeforeClass
+    @BeforeAll
     @SneakyThrows
     public static void prepareDataSource() {
         HikariDataSource hds = new HikariDataSource();
@@ -63,7 +63,7 @@ public class QueryTest {
     }
 
 
-    @Before
+    @BeforeEach
     public void prepareData() {
         int cnt = (int)(Math.random() * 30.0f);
         for(int i = 0; i < cnt; i++) {
@@ -75,17 +75,18 @@ public class QueryTest {
 
     private void checkContextParameters(ArgumentCaptor<Map<String, Object>> captor) {
         Map<String, Object> capturedContext = captor.getValue();
-        assertThat(capturedContext, is(notNullValue()));
+        assertNotNull(capturedContext);
         for(Map.Entry<String, Object> entry : context.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            assertThat(capturedContext.get(key), equalTo(value));
+            assertEquals(value, capturedContext.get(key));
         }
     }
 
     @Test
+    @DisplayName("query: invokes namedParameterJdbcTemplate.query with correct arguments")
     @SuppressWarnings("unchecked")
-    public void testQueryCallsJdbcTemplateWithCorrectArguments() {
+    void testQueryCallsJdbcTemplateWithCorrectArguments() {
         // given
         String sql = "select 1";
         RowCallbackHandler rch = mock(RowCallbackHandler.class);
@@ -99,14 +100,15 @@ public class QueryTest {
         ArgumentCaptor<Map<String, Object>> arg2 = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<RowCallbackHandler> arg3 = ArgumentCaptor.forClass(RowCallbackHandler.class);
         verify(namedParameterJdbcTemplate, times(1)).query(arg1.capture(), arg2.capture(), arg3.capture());
-        assertThat(arg1.getValue(), equalTo(sql));
+        assertEquals(sql, arg1.getValue());
         checkContextParameters(arg2);
-        assertThat(arg3.getValue(), is(rch));
+        assertEquals(rch, arg3.getValue());
     }
 
     @Test
+    @DisplayName("queryForList: invokes namedParameterJdbcTemplate.queryForList with correct arguments")
     @SuppressWarnings("unchecked")
-    public void testQueryForListCallsJdbcTemplateWithCorrectArguments() {
+    void testQueryForListCallsJdbcTemplateWithCorrectArguments() {
         // given
         String sql = "select 1";
         List<Map<String, Object>> expectedResults = new ArrayList<>();
@@ -121,14 +123,15 @@ public class QueryTest {
         ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map<String, Object>> arg2 = ArgumentCaptor.forClass(Map.class);
         verify(namedParameterJdbcTemplate, times(1)).queryForList(arg1.capture(), arg2.capture());
-        assertThat(arg1.getValue(), equalTo(sql));
+        assertEquals(sql, arg1.getValue());
         checkContextParameters(arg2);
-        assertThat(results, is(expectedResults));
+        assertEquals(expectedResults, results);
     }
 
     @Test
+    @DisplayName("queryForInt: invokes namedParameterJdbcTemplate.queryForObject with correct arguments")
     @SuppressWarnings("unchecked")
-    public void testQueryForIntCallsJdbcTemplateWithCorrectArguments() {
+    void testQueryForIntCallsJdbcTemplateWithCorrectArguments() {
         // given
         String sql = "select 1";
         Integer expectedResult = 10;
@@ -142,14 +145,15 @@ public class QueryTest {
         ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map<String, Object>> arg2 = ArgumentCaptor.forClass(Map.class);
         verify(namedParameterJdbcTemplate, times(1)).queryForObject(arg1.capture(), arg2.capture(), eq(Integer.class));
-        assertThat(arg1.getValue(), equalTo(sql));
+        assertEquals(sql, arg1.getValue());
         checkContextParameters(arg2);
-        assertThat(result, equalTo(expectedResult));
+        assertEquals(expectedResult, result);
     }
 
     @Test
+    @DisplayName("queryForLong: invokes namedParameterJdbcTemplate.queryForObject with correct arguments")
     @SuppressWarnings("unchecked")
-    public void testQueryForLongCallsJdbcTemplateWithCorrectArguments() {
+    void testQueryForLongCallsJdbcTemplateWithCorrectArguments() {
         // given
         String sql = "select 1";
         Long expectedResult = 15L;
@@ -163,14 +167,15 @@ public class QueryTest {
         ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map<String, Object>> arg2 = ArgumentCaptor.forClass(Map.class);
         verify(namedParameterJdbcTemplate, times(1)).queryForObject(arg1.capture(), arg2.capture(), eq(Long.class));
-        assertThat(arg1.getValue(), equalTo(sql));
+        assertEquals(sql, arg1.getValue());
         checkContextParameters(arg2);
-        assertThat(result, equalTo(expectedResult));
+        assertEquals(expectedResult, result);
     }
 
     @Test
+    @DisplayName("queryForMap: invokes namedParameterJdbcTemplate.queryForMap with correct arguments")
     @SuppressWarnings("unchecked")
-    public void testQueryForMapCallsJdbcTemplateWithCorrectArguments() {
+    void testQueryForMapCallsJdbcTemplateWithCorrectArguments() {
         // given
         String sql = "select 1";
         Map<String, Object> expectedResult = new HashMap<>();
@@ -184,14 +189,15 @@ public class QueryTest {
         ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map<String, Object>> arg2 = ArgumentCaptor.forClass(Map.class);
         verify(namedParameterJdbcTemplate, times(1)).queryForMap(arg1.capture(), arg2.capture());
-        assertThat(arg1.getValue(), equalTo(sql));
+        assertEquals(sql, arg1.getValue());
         checkContextParameters(arg2);
-        assertThat(result, is(expectedResult));
+        assertEquals(expectedResult, result);
     }
 
     @Test
+    @DisplayName("update: invokes namedParameterJdbcTemplate.update with correct arguments")
     @SuppressWarnings("unchecked")
-    public void testUpdateCallsJdbcTemplateWithCorrectArguments() {
+    void testUpdateCallsJdbcTemplateWithCorrectArguments() {
         // given
         String sql = "select 1";
         Integer expectedResult = 10;
@@ -205,14 +211,15 @@ public class QueryTest {
         ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map<String, Object>> arg2 = ArgumentCaptor.forClass(Map.class);
         verify(namedParameterJdbcTemplate, times(1)).update(arg1.capture(), arg2.capture());
-        assertThat(arg1.getValue(), equalTo(sql));
+        assertEquals(sql, arg1.getValue());
         checkContextParameters(arg2);
-        assertThat(result, equalTo(expectedResult));
+        assertEquals(expectedResult, result);
     }
 
     @Test
+    @DisplayName("execute: invokes namedParameterJdbcTemplate.execute with correct arguments")
     @SuppressWarnings("unchecked")
-    public void testExecuteCallsJdbcTemplateWithCorrectArguments() {
+    void testExecuteCallsJdbcTemplateWithCorrectArguments() {
         // given
         String sql = "select 1";
         when(namedParameterJdbcTemplate.execute(anyString(), anyMap(), any())).thenReturn(true);
@@ -225,13 +232,14 @@ public class QueryTest {
         ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map<String, Object>> arg2 = ArgumentCaptor.forClass(Map.class);
         verify(namedParameterJdbcTemplate, times(1)).execute(arg1.capture(), arg2.capture(), any());
-        assertThat(arg1.getValue(), equalTo(sql));
-        assertThat(result, is(true));
+        assertEquals(sql, arg1.getValue());
+        assertTrue(result);
         checkContextParameters(arg2);
     }
 
     @Test
-    public void testIterate() {
+    @DisplayName("iterate: iterates through all records with correct arguments")
+    void testIterate() {
         // given
         String sql = "select * from \"cool_people\" where first_name like :name_like order by idx";
         Map<String, Object> params = new HashMap<>();
@@ -240,20 +248,19 @@ public class QueryTest {
         Query query = new Query(jdbcTemplate, sql, params);
         List<Map<String, Object>> expectation = jdbcTemplate.queryForList(sql, params);
 
-
         // when
         List<Map<String, Object>> results = new ArrayList<>();
         query.iterate(results::add);
 
         // then
-        assertThat(results.size(), is(expectation.size()));
+        assertEquals(expectation.size(), results.size());
 
         for(int i = 0; i < results.size(); i++) {
             Map<String, Object> res = results.get(i);
             Map<String, Object> exp = expectation.get(i);
-            assertThat(res.size(), equalTo(exp.size()));
+            assertEquals(exp.size(), res.size());
             for(Map.Entry<String, Object> kv : res.entrySet()) {
-                assertThat(exp.get(kv.getKey()), equalTo(kv.getValue()));
+                assertEquals(kv.getValue(), exp.get(kv.getKey()));
             }
         }
     }

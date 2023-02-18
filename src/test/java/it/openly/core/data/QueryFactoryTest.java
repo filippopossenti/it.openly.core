@@ -5,11 +5,12 @@ import it.openly.core.test.TestUtils;
 import it.openly.core.test.pojos.CoolPerson;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -22,18 +23,18 @@ import java.util.Map;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
-public class QueryFactoryTest {
 
-    private static List<Map<String, Object>> people = new ArrayList<>();
+@ExtendWith(MockitoExtension.class)
+class QueryFactoryTest {
+
+    private static final List<Map<String, Object>> people = new ArrayList<>();
     private static DataSource dataSource;
 
     private QueryFactory queryFactory;
 
-    @BeforeClass
+    @BeforeAll
     @SneakyThrows
     public static void prepareDataSource() {
         HikariDataSource hds = new HikariDataSource();
@@ -57,13 +58,14 @@ public class QueryFactoryTest {
         jt.update(insert_sql, people.get(3));
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         queryFactory = new QueryFactory(dataSource);
     }
 
     @Test
-    public void testQueryForList() {
+    @DisplayName("queryForList: applies correct filter and returns correct results")
+    void testQueryForList() {
         // given
         String lastName = "Doe";
         List<Map<String, Object>> expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).collect(Collectors.toList());
@@ -72,16 +74,17 @@ public class QueryFactoryTest {
         List<Map<String, Object>> actualResults = queryFactory.queryForList("list.sql", TestUtils.map("LAST_NAME", lastName));
 
         // then
-        assertThat(actualResults.size(), is(expectedResults.size()));
+        assertEquals(expectedResults.size(), actualResults.size());
         for(int i = 0; i < expectedResults.size(); i++) {
             Map<String, Object> expectation = expectedResults.get(i);
             Map<String, Object> actual = actualResults.get(i);
-            assertThat(actual.get("IDX"), is(expectation.get("IDX")));
+            assertEquals(expectation.get("IDX"), actual.get("IDX"));
         }
     }
 
     @Test
-    public void testQueryForBeans() {
+    @DisplayName("queryForBeans: applies correct filter and returns beans of the desired type")
+    void testQueryForBeans() {
         // given
         String lastName = "Doe";
         List<Map<String, Object>> expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).collect(Collectors.toList());
@@ -90,33 +93,35 @@ public class QueryFactoryTest {
         List<CoolPerson> actualResults = queryFactory.queryForBeans("list.sql", CoolPerson.class, TestUtils.map("LAST_NAME", lastName));
 
         // then
-        assertThat(actualResults.size(), is(expectedResults.size()));
+        assertEquals(expectedResults.size(), actualResults.size());
         for(int i = 0; i < expectedResults.size(); i++) {
             Map<String, Object> expectation = expectedResults.get(i);
             CoolPerson actual = actualResults.get(i);
-            assertThat(actual.getIdx(), is(expectation.get("IDX")));
-            assertThat(actual.getFirstName(), is(expectation.get("FIRST_NAME")));
-            assertThat(actual.getLastName(), is(expectation.get("LAST_NAME")));
-            assertThat(actual.getSubscriptionDate().getTime(), is(((Date)expectation.get("SUBSCRIPTION_DATE")).getTime()));
-            assertThat(actual.getRating().doubleValue(), is(((Number)expectation.get("RATING")).doubleValue()));
+            assertEquals(expectation.get("IDX"), actual.getIdx());
+            assertEquals(expectation.get("FIRST_NAME"), actual.getFirstName());
+            assertEquals(expectation.get("LAST_NAME"), actual.getLastName());
+            assertEquals(((Date)expectation.get("SUBSCRIPTION_DATE")).getTime(), actual.getSubscriptionDate().getTime());
+            assertEquals(((Number)expectation.get("RATING")).doubleValue(), actual.getRating().doubleValue());
         }
     }
 
     @Test
-    public void testQueryForInt() {
+    @DisplayName("queryForInt: applies correct filter and returns the correct value")
+    void testQueryForInt() {
         // given
         String lastName = "Doe";
         long expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).count();
 
         // when
-        long actualResults = (long)queryFactory.queryForInt("count.sql", TestUtils.map("LAST_NAME", lastName));
+        long actualResults = queryFactory.queryForInt("count.sql", TestUtils.map("LAST_NAME", lastName));
 
         // then
-        assertThat(actualResults, is(expectedResults));
+        assertEquals(expectedResults, actualResults);
     }
 
     @Test
-    public void testQueryForLong() {
+    @DisplayName("queryForLong: applies correct filter and returns the correct value")
+    void testQueryForLong() {
         // given
         String lastName = "Doe";
         long expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).count();
@@ -125,11 +130,12 @@ public class QueryFactoryTest {
         long actualResults = queryFactory.queryForLong("count.sql", TestUtils.map("LAST_NAME", lastName));
 
         // then
-        assertThat(actualResults, is(expectedResults));
+        assertEquals(expectedResults, actualResults);
     }
 
     @Test
-    public void testQueryForMap() {
+    @DisplayName("queryForMap: applies correct filter and returns a Map with correct values")
+    void testQueryForMap() {
         // given
         int idx = 3;
         Map<String, Object> expectedPerson = people.stream().filter(m -> m.get("IDX").equals(idx)).findAny().orElseThrow(IllegalArgumentException::new);
@@ -138,12 +144,13 @@ public class QueryFactoryTest {
         Map<String, Object> actualPerson = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
 
         // then
-        assertThat(actualPerson.get("FIRST_NAME"), is(expectedPerson.get("FIRST_NAME")));
+        assertEquals(expectedPerson.get("FIRST_NAME"), actualPerson.get("FIRST_NAME"));
 
     }
 
     @Test
-    public void testQueryForBean() {
+    @DisplayName("queryForBean: applies correct filter and returns a bean of the desired type with the correct values")
+    void testQueryForBean() {
         // given
         int idx = 3;
         Map<String, Object> expectedPerson = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
@@ -152,15 +159,16 @@ public class QueryFactoryTest {
        CoolPerson actualPerson = queryFactory.queryForBean("get.sql", CoolPerson.class, TestUtils.map("IDX", idx));
 
         // then
-        assertThat(actualPerson.getIdx(), is(expectedPerson.get("IDX")));
-        assertThat(actualPerson.getFirstName(), is(expectedPerson.get("FIRST_NAME")));
-        assertThat(actualPerson.getLastName(), is(expectedPerson.get("LAST_NAME")));
-        assertThat(actualPerson.getSubscriptionDate().getTime(), is(((Date)expectedPerson.get("SUBSCRIPTION_DATE")).getTime()));
-        assertThat(actualPerson.getRating().doubleValue(), is(((Number)expectedPerson.get("RATING")).doubleValue()));
+        assertEquals(expectedPerson.get("IDX"), actualPerson.getIdx());
+        assertEquals(expectedPerson.get("FIRST_NAME"), actualPerson.getFirstName());
+        assertEquals(expectedPerson.get("LAST_NAME"), actualPerson.getLastName());
+        assertEquals(((Date)expectedPerson.get("SUBSCRIPTION_DATE")).getTime(), actualPerson.getSubscriptionDate().getTime());
+        assertEquals(((Number)expectedPerson.get("RATING")).doubleValue(), actualPerson.getRating().doubleValue());
     }
 
     @Test
-    public void testQueryForObject() {
+    @DisplayName("queryForObject: applies correct filter and returns an object of the specified type")
+    void testQueryForObject() {
         // given
         int idx = 3;
         String expectedPersonName = (String)people.stream().filter(m -> m.get("IDX").equals(idx)).findAny().orElseThrow(IllegalArgumentException::new).get("FIRST_NAME");
@@ -169,11 +177,12 @@ public class QueryFactoryTest {
        String actualPersonName = queryFactory.queryForObject("getfield.sql", String.class, TestUtils.map("IDX", idx));
 
         // then
-        assertThat(actualPersonName, is(expectedPersonName));
+        assertEquals(expectedPersonName, actualPersonName);
     }
 
     @Test
-    public void testUpdate() {
+    @DisplayName("update: applies correct arguments and updates the correct rows")
+    void testUpdate() {
         // given
         int idx = 3;
         double rating = 123.4;
@@ -184,12 +193,13 @@ public class QueryFactoryTest {
 
 
         // then
-        assertThat(affectedRows, is(1));
-        assertThat(((Number)actualValue.get("RATING")).doubleValue(), is(rating));
+        assertEquals(1, affectedRows);
+        assertEquals(rating, ((Number)actualValue.get("RATING")).doubleValue());
     }
 
     @Test
-    public void testIterate() {
+    @DisplayName("iterate: applies correct arguments and iterates through the correct results with correct values")
+    void testIterate() {
         // given
         String lastName = "Doe";
         List<Map<String, Object>> expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).collect(Collectors.toList());
@@ -199,11 +209,12 @@ public class QueryFactoryTest {
         queryFactory.iterate("list.sql", r-> adder.increment(), TestUtils.map("LAST_NAME", lastName));
 
         // then
-        assertThat(adder.intValue(), is(expectedResults.size()));
+        assertEquals(expectedResults.size(), adder.intValue());
     }
 
     @Test
-    public void testIterateBeans() {
+    @DisplayName("iterateBeans: applies correct arguments and iterates through beans of the correct type with correct values")
+    void testIterateBeans() {
         // given
         String lastName = "Doe";
         List<Map<String, Object>> expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).collect(Collectors.toList());
@@ -213,21 +224,22 @@ public class QueryFactoryTest {
         queryFactory.iterate("list.sql", CoolPerson.class, actualResults::add, TestUtils.map("LAST_NAME", lastName));
 
         // then
-        assertThat(actualResults.size(), is(expectedResults.size()));
+        assertEquals(expectedResults.size(), actualResults.size());
         for(int i = 0; i < expectedResults.size(); i++) {
             Map<String, Object> expectation = expectedResults.get(i);
             CoolPerson actual = actualResults.get(i);
-            assertThat(actual.getIdx(), is(expectation.get("IDX")));
-            assertThat(actual.getFirstName(), is(expectation.get("FIRST_NAME")));
-            assertThat(actual.getLastName(), is(expectation.get("LAST_NAME")));
-            assertThat(actual.getSubscriptionDate().getTime(), is(((Date)expectation.get("SUBSCRIPTION_DATE")).getTime()));
-            assertThat(actual.getRating().doubleValue(), is(((Number)expectation.get("RATING")).doubleValue()));
+            assertEquals(expectation.get("IDX"), actual.getIdx());
+            assertEquals(expectation.get("FIRST_NAME"), actual.getFirstName());
+            assertEquals(expectation.get("LAST_NAME"), actual.getLastName());
+            assertEquals(((Date)expectation.get("SUBSCRIPTION_DATE")).getTime(), actual.getSubscriptionDate().getTime());
+            assertEquals(((Number)expectation.get("RATING")).doubleValue(), actual.getRating().doubleValue());
         }
 
     }
 
     @Test
-    public void testExecute() {
+    @DisplayName("execute: applies correct arguments and runs the specified script correctly")
+    void testExecute() {
         // given
         int idx = 3;
         double rating = 123.4;
@@ -237,21 +249,27 @@ public class QueryFactoryTest {
         Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
 
         // then
-        assertThat(((Number)actualValue.get("RATING")).doubleValue(), is(rating));
+        assertEquals(rating, ((Number)actualValue.get("RATING")).doubleValue());
     }
 
     @Test
-    public void testExecutePreparedStatementCallback() {
+    @DisplayName("execute: invokes the specified callback")
+    void testExecutePreparedStatementCallback() {
         // given
         int idx = 3;
         double rating = 456.7;
+        LongAdder calls = new LongAdder();
 
         // when
-        queryFactory.execute("update.sql", PreparedStatement::execute, TestUtils.map("IDX", idx, "RATING", rating));
+        queryFactory.execute("update.sql", ps -> {
+            calls.increment();
+            return ps.execute();
+        }, TestUtils.map("IDX", idx, "RATING", rating));
         Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
 
         // then
-        assertThat(((Number)actualValue.get("RATING")).doubleValue(), is(rating));
+        assertEquals(1, calls.intValue());
+        assertEquals(rating, ((Number)actualValue.get("RATING")).doubleValue());
     }
 
 }

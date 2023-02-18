@@ -15,11 +15,11 @@
 		<spring.security.version>5.2.11.RELEASE</spring.security.version>
 		<aspectj.version>1.8.4</aspectj.version>
 		<commons.io.version>2.7</commons.io.version>
-		<junit.version>4.13.1</junit.version>
+		<junit.jupiter.version>5.9.2</junit.jupiter.version>
 		<stringtemplate.version>4.0.8</stringtemplate.version>
 		<velocity.version>1.7</velocity.version>
 		<servlet.version>2.5</servlet.version>
-		<mockito.version>2.27.0</mockito.version>
+		<mockito.version>5.1.1</mockito.version>
 		<lombok.version>1.18.8</lombok.version>
 		<hsqldb.version>2.5.0</hsqldb.version>
 		<hikaricp.version>3.3.1</hikaricp.version>
@@ -41,11 +41,31 @@
 	
 	<dependencies>
 	 	<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -122,12 +142,6 @@
 			<version>${aspectj.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
