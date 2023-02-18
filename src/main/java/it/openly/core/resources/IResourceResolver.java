@@ -15,9 +15,9 @@ public interface IResourceResolver {
 
 	String resolveStringResource(String resourceName);
 
-	Boolean getFailIfNotExisting();
-	void setFailIfNotExisting(Boolean failIfNotExisting);
+	boolean isFailIfNotExisting();
+	void setFailIfNotExisting(boolean failIfNotExisting);
 	
-	Boolean getFailIfManyExisting();
-	void setFailIfManyExisting(Boolean failIfManyExisting);
+	boolean isFailIfManyExisting();
+	void setFailIfManyExisting(boolean failIfManyExisting);
 }

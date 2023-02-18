@@ -15,6 +15,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
+import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,8 +45,8 @@ class QueryFactoryTest {
         hds.setPassword("");
         dataSource = hds;
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        String objects_create_sql = IOUtils.toString(resolver.getResource("queries/hsql/objects_create.sql").getInputStream());
-        String insert_sql = IOUtils.toString(resolver.getResource("queries/hsql/insert.sql").getInputStream());
+        String objects_create_sql = IOUtils.toString(resolver.getResource("queries/hsql/objects_create.sql").getInputStream(), Charset.defaultCharset());
+        String insert_sql = IOUtils.toString(resolver.getResource("queries/hsql/insert.sql").getInputStream(), Charset.defaultCharset());
         NamedParameterJdbcTemplate jt = new NamedParameterJdbcTemplate(dataSource);
         jt.execute(objects_create_sql, PreparedStatement::execute);
         people.add(TestUtils.map("IDX", 1, "FIRST_NAME", "John", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", TestUtils.dt("2019-08-19"), "RATING", 5.27));

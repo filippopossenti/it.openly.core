@@ -8,7 +8,7 @@ package it.openly.core.exceptions;
  * @author filippo.possenti
  */
 public class AppRuntimeException extends RuntimeException {
-	private Object[] arguments;
+	private final transient Object[] arguments;
 
 	public AppRuntimeException(String message, Object... arguments) {
 		super(String.format(message, arguments));

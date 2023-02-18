@@ -5,6 +5,7 @@ import it.openly.core.exceptions.TooFewResultsException;
 import it.openly.core.exceptions.TooManyResultsException;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,8 +29,8 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 public class DefaultResourceResolver implements IResourceResolver {
 	private String basePath = "classpath*:/";
 	private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-	private Boolean failIfNotExisting = true;
-	private Boolean failIfManyExisting = true;
+	private boolean failIfNotExisting = true;
+	private boolean failIfManyExisting = true;
 
 	@SneakyThrows
 	public boolean hasResource(String resourceName) {
@@ -59,7 +60,7 @@ public class DefaultResourceResolver implements IResourceResolver {
 	@Override
 	@SneakyThrows
 	public String resolveStringResource(String resourceName) {
-		return IOUtils.toString(resolveResource(resourceName));
+		return IOUtils.toString(resolveResource(resourceName), Charset.defaultCharset());
 	}
 
 	private String composePath(String resourceName) {

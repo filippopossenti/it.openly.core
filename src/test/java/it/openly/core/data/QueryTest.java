@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
+import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.util.*;
 
@@ -48,8 +49,8 @@ public class QueryTest {
         hds.setPassword("");
         dataSource = hds;
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        String objects_create_sql = IOUtils.toString(resolver.getResource("queries/hsql/objects_create.sql").getInputStream());
-        String insert_sql = IOUtils.toString(resolver.getResource("queries/hsql/insert.sql").getInputStream());
+        String objects_create_sql = IOUtils.toString(resolver.getResource("queries/hsql/objects_create.sql").getInputStream(), Charset.defaultCharset());
+        String insert_sql = IOUtils.toString(resolver.getResource("queries/hsql/insert.sql").getInputStream(), Charset.defaultCharset());
         NamedParameterJdbcTemplate jt = new NamedParameterJdbcTemplate(dataSource);
         jt.execute(objects_create_sql, PreparedStatement::execute);
         people.add(map("IDX", 1, "FIRST_NAME", "John", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", dt("2019-08-19"), "RATING", 5));

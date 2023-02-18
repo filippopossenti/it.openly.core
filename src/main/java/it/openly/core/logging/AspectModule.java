@@ -83,6 +83,7 @@ public class AspectModule {
 	 * @return The result value of the function
 	 * @throws Throwable The thrown exception
 	 */
+	@SuppressWarnings({"java:S2139"})	// we suppress this SonarLint warning as the nature of this method requires us to handle the exception this way
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		Logger logger = LoggerFactory.getLogger(joinPoint.getSignature().getDeclaringType());
 		

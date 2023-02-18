@@ -40,10 +40,13 @@ import jakarta.servlet.ServletContextListener;
  */
 public class LogbackJNDIListener implements ServletContextListener {
 
+	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		
+		// no cleanup needed
 	}
 
+	@Override
+	@SuppressWarnings({"java:S106"})	// we suppress SonarLint's warning on Standard Outputs as we don't have a logger configured yet at this stage, so we only have System.out available
 	public void contextInitialized(ServletContextEvent arg0) {
 		String override = System.getProperty("logbackjndilistener.disable");
 		if("true".equalsIgnoreCase(override)) {

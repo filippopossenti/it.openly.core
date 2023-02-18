@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -51,14 +52,14 @@ class SimpleQueryTemplateProcessorTest {
 
     @SneakyThrows
     private String loadInputTemplateText(Resource resource) {
-        return IOUtils.toString(resource.getInputStream());
+        return IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
     }
 
     @SneakyThrows
     private String loadExpectationText(Resource resource) {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] exp = resolver.getResources("classpath*:/simplequerytemplateprocessortest/templatequeries/"+ resource.getFilename() + ".expectation");
-        return IOUtils.toString(exp[0].getInputStream());
+        return IOUtils.toString(exp[0].getInputStream(), Charset.defaultCharset());
     }
 
     @ParameterizedTest
