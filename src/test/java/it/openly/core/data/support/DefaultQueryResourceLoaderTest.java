@@ -1,4 +1,4 @@
-package it.openly.core.data.tests;
+package it.openly.core.data.support;
 
 import it.openly.core.data.support.DbProductDetector;
 import it.openly.core.data.support.DefaultQueryResourceLoader;

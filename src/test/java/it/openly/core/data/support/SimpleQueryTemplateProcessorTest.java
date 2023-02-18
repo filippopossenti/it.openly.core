@@ -1,4 +1,4 @@
-package it.openly.core.data.tests;
+package it.openly.core.data.support;
 
 import it.openly.core.data.ProcessedTemplate;
 import it.openly.core.data.support.SimpleQueryTemplateProcessor;

@@ -1,4 +1,4 @@
-package it.openly.core.data.tests;
+package it.openly.core.test.pojos;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,12 +1,11 @@
-package it.openly.core.data.tests;
+package it.openly.core.data.support;
 
 import it.openly.core.data.ProcessedTemplate;
-import it.openly.core.data.support.VelocityQueryTemplateProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static it.openly.core.data.tests.TestUtils.map;
+import static it.openly.core.test.TestUtils.map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

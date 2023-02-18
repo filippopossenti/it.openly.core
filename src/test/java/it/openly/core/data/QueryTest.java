@@ -1,7 +1,6 @@
-package it.openly.core.data.tests;
+package it.openly.core.data;
 
 import com.zaxxer.hikari.HikariDataSource;
-import it.openly.core.data.Query;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -19,8 +18,8 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.util.*;
 
-import static it.openly.core.data.tests.TestUtils.dt;
-import static it.openly.core.data.tests.TestUtils.map;
+import static it.openly.core.test.TestUtils.dt;
+import static it.openly.core.test.TestUtils.map;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;

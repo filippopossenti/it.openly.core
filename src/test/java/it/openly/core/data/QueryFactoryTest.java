@@ -1,7 +1,8 @@
-package it.openly.core.data.tests;
+package it.openly.core.data;
 
 import com.zaxxer.hikari.HikariDataSource;
-import it.openly.core.data.QueryFactory;
+import it.openly.core.test.TestUtils;
+import it.openly.core.test.pojos.CoolPerson;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -21,8 +22,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
-import static it.openly.core.data.tests.TestUtils.dt;
-import static it.openly.core.data.tests.TestUtils.map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -48,10 +47,10 @@ public class QueryFactoryTest {
         String insert_sql = IOUtils.toString(resolver.getResource("queries/hsql/insert.sql").getInputStream());
         NamedParameterJdbcTemplate jt = new NamedParameterJdbcTemplate(dataSource);
         jt.execute(objects_create_sql, PreparedStatement::execute);
-        people.add(map("IDX", 1, "FIRST_NAME", "John", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", dt("2019-08-19"), "RATING", 5.27));
-        people.add(map("IDX", 2, "FIRST_NAME", "Jane", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", dt("2018-08-19"), "RATING", 6.15));
-        people.add(map("IDX", 3, "FIRST_NAME", "Mary", "LAST_NAME", "Doherty", "SUBSCRIPTION_DATE", dt("2018-01-27"), "RATING", 4.83));
-        people.add(map("IDX", 4, "FIRST_NAME", "Mark", "LAST_NAME", "Dundall", "SUBSCRIPTION_DATE", dt("2017-12-18"), "RATING", 6.54));
+        people.add(TestUtils.map("IDX", 1, "FIRST_NAME", "John", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", TestUtils.dt("2019-08-19"), "RATING", 5.27));
+        people.add(TestUtils.map("IDX", 2, "FIRST_NAME", "Jane", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", TestUtils.dt("2018-08-19"), "RATING", 6.15));
+        people.add(TestUtils.map("IDX", 3, "FIRST_NAME", "Mary", "LAST_NAME", "Doherty", "SUBSCRIPTION_DATE", TestUtils.dt("2018-01-27"), "RATING", 4.83));
+        people.add(TestUtils.map("IDX", 4, "FIRST_NAME", "Mark", "LAST_NAME", "Dundall", "SUBSCRIPTION_DATE", TestUtils.dt("2017-12-18"), "RATING", 6.54));
         jt.update(insert_sql, people.get(0));
         jt.update(insert_sql, people.get(1));
         jt.update(insert_sql, people.get(2));
@@ -70,7 +69,7 @@ public class QueryFactoryTest {
         List<Map<String, Object>> expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).collect(Collectors.toList());
 
         // when
-        List<Map<String, Object>> actualResults = queryFactory.queryForList("list.sql", map("LAST_NAME", lastName));
+        List<Map<String, Object>> actualResults = queryFactory.queryForList("list.sql", TestUtils.map("LAST_NAME", lastName));
 
         // then
         assertThat(actualResults.size(), is(expectedResults.size()));
@@ -88,7 +87,7 @@ public class QueryFactoryTest {
         List<Map<String, Object>> expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).collect(Collectors.toList());
 
         // when
-        List<CoolPerson> actualResults = queryFactory.queryForBeans("list.sql", CoolPerson.class, map("LAST_NAME", lastName));
+        List<CoolPerson> actualResults = queryFactory.queryForBeans("list.sql", CoolPerson.class, TestUtils.map("LAST_NAME", lastName));
 
         // then
         assertThat(actualResults.size(), is(expectedResults.size()));
@@ -110,7 +109,7 @@ public class QueryFactoryTest {
         long expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).count();
 
         // when
-        long actualResults = (long)queryFactory.queryForInt("count.sql", map("LAST_NAME", lastName));
+        long actualResults = (long)queryFactory.queryForInt("count.sql", TestUtils.map("LAST_NAME", lastName));
 
         // then
         assertThat(actualResults, is(expectedResults));
@@ -123,7 +122,7 @@ public class QueryFactoryTest {
         long expectedResults = people.stream().filter(m -> m.get("LAST_NAME").equals(lastName)).count();
 
         // when
-        long actualResults = queryFactory.queryForLong("count.sql", map("LAST_NAME", lastName));
+        long actualResults = queryFactory.queryForLong("count.sql", TestUtils.map("LAST_NAME", lastName));
 
         // then
         assertThat(actualResults, is(expectedResults));
@@ -136,7 +135,7 @@ public class QueryFactoryTest {
         Map<String, Object> expectedPerson = people.stream().filter(m -> m.get("IDX").equals(idx)).findAny().orElseThrow(IllegalArgumentException::new);
 
         // when
-        Map<String, Object> actualPerson = queryFactory.queryForMap("get.sql", map("IDX", idx));
+        Map<String, Object> actualPerson = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
 
         // then
         assertThat(actualPerson.get("FIRST_NAME"), is(expectedPerson.get("FIRST_NAME")));
@@ -147,10 +146,10 @@ public class QueryFactoryTest {
     public void testQueryForBean() {
         // given
         int idx = 3;
-        Map<String, Object> expectedPerson = queryFactory.queryForMap("get.sql", map("IDX", idx));
+        Map<String, Object> expectedPerson = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
 
         // when
-       CoolPerson actualPerson = queryFactory.queryForBean("get.sql", CoolPerson.class, map("IDX", idx));
+       CoolPerson actualPerson = queryFactory.queryForBean("get.sql", CoolPerson.class, TestUtils.map("IDX", idx));
 
         // then
         assertThat(actualPerson.getIdx(), is(expectedPerson.get("IDX")));
@@ -167,7 +166,7 @@ public class QueryFactoryTest {
         String expectedPersonName = (String)people.stream().filter(m -> m.get("IDX").equals(idx)).findAny().orElseThrow(IllegalArgumentException::new).get("FIRST_NAME");
 
         // when
-       String actualPersonName = queryFactory.queryForObject("getfield.sql", String.class, map("IDX", idx));
+       String actualPersonName = queryFactory.queryForObject("getfield.sql", String.class, TestUtils.map("IDX", idx));
 
         // then
         assertThat(actualPersonName, is(expectedPersonName));
@@ -180,8 +179,8 @@ public class QueryFactoryTest {
         double rating = 123.4;
 
         // when
-        int affectedRows = queryFactory.update("update.sql", map("IDX", idx, "RATING", rating));
-        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
+        int affectedRows = queryFactory.update("update.sql", TestUtils.map("IDX", idx, "RATING", rating));
+        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
 
 
         // then
@@ -197,7 +196,7 @@ public class QueryFactoryTest {
 
         // when
         LongAdder adder = new LongAdder();
-        queryFactory.iterate("list.sql", r-> adder.increment(), map("LAST_NAME", lastName));
+        queryFactory.iterate("list.sql", r-> adder.increment(), TestUtils.map("LAST_NAME", lastName));
 
         // then
         assertThat(adder.intValue(), is(expectedResults.size()));
@@ -211,7 +210,7 @@ public class QueryFactoryTest {
 
         // when
         List<CoolPerson> actualResults = new ArrayList<>();
-        queryFactory.iterate("list.sql", CoolPerson.class, actualResults::add, map("LAST_NAME", lastName));
+        queryFactory.iterate("list.sql", CoolPerson.class, actualResults::add, TestUtils.map("LAST_NAME", lastName));
 
         // then
         assertThat(actualResults.size(), is(expectedResults.size()));
@@ -234,8 +233,8 @@ public class QueryFactoryTest {
         double rating = 123.4;
 
         // when
-        queryFactory.execute("update.sql", map("IDX", idx, "RATING", rating));
-        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
+        queryFactory.execute("update.sql", TestUtils.map("IDX", idx, "RATING", rating));
+        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
 
         // then
         assertThat(((Number)actualValue.get("RATING")).doubleValue(), is(rating));
@@ -248,8 +247,8 @@ public class QueryFactoryTest {
         double rating = 456.7;
 
         // when
-        queryFactory.execute("update.sql", PreparedStatement::execute, map("IDX", idx, "RATING", rating));
-        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", map("IDX", idx));
+        queryFactory.execute("update.sql", PreparedStatement::execute, TestUtils.map("IDX", idx, "RATING", rating));
+        Map<String, Object> actualValue = queryFactory.queryForMap("get.sql", TestUtils.map("IDX", idx));
 
         // then
         assertThat(((Number)actualValue.get("RATING")).doubleValue(), is(rating));

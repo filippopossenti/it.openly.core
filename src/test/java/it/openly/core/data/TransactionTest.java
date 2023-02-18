@@ -1,8 +1,6 @@
-package it.openly.core.data.tests;
+package it.openly.core.data;
 
 import com.zaxxer.hikari.HikariDataSource;
-import it.openly.core.data.QueryFactory;
-import it.openly.core.data.Transaction;
 import it.openly.core.exceptions.RollbackOnlyException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
@@ -20,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static it.openly.core.data.tests.TestUtils.dt;
-import static it.openly.core.data.tests.TestUtils.map;
+import static it.openly.core.test.TestUtils.dt;
+import static it.openly.core.test.TestUtils.map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
