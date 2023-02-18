@@ -1,8 +1,7 @@
 package it.openly.core.logging;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,17 +127,15 @@ public class AspectModule {
 	
 	private static String getSessionId() {
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		String result = "no session";
-		if(attr != null) {
-			HttpServletRequest req = attr.getRequest();
-			if(req != null) {
-				HttpSession sess = req.getSession(false);
-				if(sess != null) {
-					result = sess.getId();
-				}
-			}
+		if(attr == null) {
+			return "no session";
 		}
-		return result;
+		HttpServletRequest req = attr.getRequest();
+		HttpSession sess = req.getSession(false);
+		if(sess != null) {
+			return sess.getId();
+		}
+		return "no session";
 	}
 	
 	private static String getUserName() {
@@ -148,8 +145,7 @@ public class AspectModule {
 			Authentication auth = ctx.getAuthentication();
 			if(auth != null) {
 				Object princ = auth.getPrincipal();
-				if(princ instanceof User) {
-					User user = (User)princ;
+				if(princ instanceof User user) {
 					result = user.getUsername();
 				}
 			}

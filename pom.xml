@@ -8,21 +8,22 @@
 	<description>Useful core functionality</description>
 	
 	<properties>
-		<logback.version>1.2.0</logback.version>
-		<jcloverslf4j.version>1.7.7</jcloverslf4j.version>
-		<slf4j.version>1.7.7</slf4j.version>
-		<spring.version>5.1.9.RELEASE</spring.version>
-		<spring.security.version>5.2.11.RELEASE</spring.security.version>
-		<aspectj.version>1.8.4</aspectj.version>
-		<commons.io.version>2.7</commons.io.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<logback.version>1.4.5</logback.version>
+		<jcloverslf4j.version>2.0.6</jcloverslf4j.version>
+		<slf4j.version>2.0.6</slf4j.version>
+		<spring.version>6.0.5</spring.version>
+		<spring.security.version>6.0.1</spring.security.version>
+		<aspectj.version>1.9.19</aspectj.version>
+		<commons.io.version>2.11.0</commons.io.version>
 		<junit.jupiter.version>5.9.2</junit.jupiter.version>
-		<stringtemplate.version>4.0.8</stringtemplate.version>
-		<velocity.version>1.7</velocity.version>
-		<servlet.version>2.5</servlet.version>
+		<velocity.version>2.3</velocity.version>
+		<servlet.version>6.0.0</servlet.version>
 		<mockito.version>5.1.1</mockito.version>
-		<lombok.version>1.18.8</lombok.version>
-		<hsqldb.version>2.5.0</hsqldb.version>
-		<hikaricp.version>3.3.1</hikaricp.version>
+		<lombok.version>1.18.26</lombok.version>
+		<hsqldb.version>2.7.1</hsqldb.version>
+		<hikaricp.version>5.0.1</hikaricp.version>
 	</properties>
 	
 	<build>
@@ -30,10 +31,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.2</version>
+				<version>3.10.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>17</source>
+					<target>17</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -90,20 +91,14 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>ST4</artifactId>
-			<version>${stringtemplate.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
+			<artifactId>velocity-engine-core</artifactId>
 			<version>${velocity.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 			<version>${servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>

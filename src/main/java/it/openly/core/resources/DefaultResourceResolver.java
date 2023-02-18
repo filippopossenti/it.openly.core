@@ -4,14 +4,13 @@ import it.openly.core.exceptions.ResourceNotFoundException;
 import it.openly.core.exceptions.TooFewResultsException;
 import it.openly.core.exceptions.TooManyResultsException;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;

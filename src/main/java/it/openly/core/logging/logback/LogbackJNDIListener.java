@@ -1,10 +1,10 @@
 package it.openly.core.logging.logback;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 /**
- * Listener meant to add a parameter needed to initialise Logback properly in this application.<br/>
+ * Listener meant to add a parameter needed to initialise Logback properly in some applications.<br/>
  * In order for it to work, you have to add a listener in your web.xml file, as follows:<br/>
  * {@code
  *     <listener>
