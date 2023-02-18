@@ -1,5 +1,0 @@
--- PRAGMA:ENABLE_INJECT --
-select
-    1
-from
-    -- =key05 --

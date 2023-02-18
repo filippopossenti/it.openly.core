@@ -1,53 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>it.openly</groupId>
 	<artifactId>openly-core-data</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>openly-core-data</name>
+	<version>${revision}</version>
 	<description>Useful core functionality</description>
 
 	<parent>
 		<artifactId>openly-core-parent</artifactId>
 		<groupId>it.openly.core</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>${revision}</version>
 	</parent>
 	
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<logback.version>1.4.5</logback.version>
-		<jcloverslf4j.version>2.0.6</jcloverslf4j.version>
-		<slf4j.version>2.0.6</slf4j.version>
-		<spring.version>6.0.5</spring.version>
-		<spring.security.version>6.0.1</spring.security.version>
-		<aspectj.version>1.9.19</aspectj.version>
-		<commons.io.version>2.11.0</commons.io.version>
-		<junit.jupiter.version>5.9.2</junit.jupiter.version>
-		<velocity.version>2.3</velocity.version>
-		<servlet.version>6.0.0</servlet.version>
-		<mockito.version>5.1.1</mockito.version>
-		<lombok.version>1.18.26</lombok.version>
-		<hsqldb.version>2.7.1</hsqldb.version>
-		<hikaricp.version>5.0.1</hikaricp.version>
-	</properties>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.10.1</version>
-				<configuration>
-					<source>17</source>
-					<target>17</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	
 	<dependencies>
-	 	<dependency>
+		<dependency>
+			<groupId>it.openly.core</groupId>
+			<artifactId>openly-core</artifactId>
+			<version>${revision}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
@@ -144,7 +116,5 @@
 			<artifactId>HikariCP</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-
 	</dependencies>
 </project>

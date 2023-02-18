@@ -6,7 +6,7 @@
 
   <groupId>it.openly.core</groupId>
   <artifactId>openly-core-parent</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
 
   <name>openly-core-parent</name>
@@ -33,6 +33,7 @@
   </properties>
 
   <modules>
+    <module>openly-core</module>
     <module>openly-core-data</module>
     <module>openly-core-io</module>
   </modules>
@@ -176,12 +177,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0-M9</version>
-          <configuration>
-            <includes>
-              <include>**/*Test.java</include>
-            </includes>
-          </configuration>
+          <version>3.0.0-M9</version><!-- Need to use 3.x or above otherwise unit tests don't run -->
           <dependencies>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
@@ -210,6 +206,31 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.4.2</version>
+        </plugin>
+        <plugin>
+          <!-- Needed to properly process maven.config revision in deployed pom files -->
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <updatePomFile>true</updatePomFile>
+          </configuration>
+          <executions>
+            <execution>
+              <id>flatten</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>flatten</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>flatten.clean</id>
+              <phase>clean</phase>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>

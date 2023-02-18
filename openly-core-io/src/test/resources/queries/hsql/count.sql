@@ -1,1 +1,0 @@
-select count(*) from "cool_people" where last_name = :LAST_NAME

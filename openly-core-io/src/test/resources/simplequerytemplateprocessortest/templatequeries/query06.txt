@@ -1,4 +1,0 @@
-select
-    1
-from
-    -- key10:value10 -- dual

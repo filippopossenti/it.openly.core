@@ -1,1 +1,0 @@
-select first_name from "cool_people" where idx = :IDX

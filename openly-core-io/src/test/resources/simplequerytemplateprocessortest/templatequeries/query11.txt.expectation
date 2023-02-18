@@ -1,6 +1,0 @@
-select
-    1
-from
-    mytable
-where
-    col in (:key17_0, :key17_1)
