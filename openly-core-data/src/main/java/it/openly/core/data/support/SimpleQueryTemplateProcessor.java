@@ -28,8 +28,9 @@ import java.util.*;
  *     -- !key4 -- and mycol3 = 'something' <br/>
  *     -- key5 -- and mycol4 in (:key5) <br/>
  * order by <br/>
- *     -- key2:value_asc -- mycol2 asc <br/>
- *     -- key2:value_desc -- mycol2 desc <br/>
+ *     -- key2:value_asc -- mycol2 asc, <br/>
+ *     -- key2:value_desc -- mycol2 desc, <br/>
+ *     id desc
  *     -- =key3 -- <br/>
  * </code>
  * <br/>
@@ -171,37 +172,26 @@ public class SimpleQueryTemplateProcessor implements ITemplateProcessor {
             }
         }
 
-        @SuppressWarnings("unchecked")
         void evaluateArrayExpansion(Map<String, Object> context) {
             Map<String, Object> ctx = new HashMap<>();
-            context.forEach((key, value) -> {
-                List<Object> arr = null;
-                if(value == null) {
-                    return;
-                }
-                if(value.getClass().isArray()) {
-                    arr = Arrays.asList((Object[]) value);
-                }
-                else if(value instanceof List) {
-                    arr = (List<Object>)value;
-                }
-                if(arr != null) {
-                    StringBuilder replacement = new StringBuilder();
-                    int count = arr.size();
-                    for(int i = 0; i < count; i++) {
-                        String indexedKey = key + "_" + i;
-                        ctx.put(indexedKey, arr.get(i));
-                        if(i > 0) {
-                            replacement.append(", ");
-                        }
-                        replacement.append(NAMED_PARAMETER_START);
-                        replacement.append(indexedKey);
-                    }
-                    result = result.replace(NAMED_PARAMETER_START + key, replacement.toString());
-                }
-            });
+            context.forEach((key, value) -> getArrayExpansionSourceCollection(value).ifPresent(list -> applyArrayExpansionReplacement(ctx, key, list)));
             context.putAll(ctx);
+        }
 
+        private void applyArrayExpansionReplacement(Map<String, Object> ctx, String key, List<?> list) {
+            StringBuilder replacement = new StringBuilder();
+            int count = list.size();
+            for(int i = 0; i < count; i++) {
+                String indexedKey = key + "_" + i;
+                ctx.put(indexedKey, list.get(i));
+                if(i > 0) {
+                    replacement.append(", ");
+                }
+                replacement.append(NAMED_PARAMETER_START);
+                replacement.append(indexedKey);
+            }
+
+            result = result.replace(NAMED_PARAMETER_START + key, replacement.toString());
         }
 
         void evaluate(String key, Object value) {
@@ -217,5 +207,25 @@ public class SimpleQueryTemplateProcessor implements ITemplateProcessor {
         String getResult() {
             return result;
         }
+
+        private Optional<List<?>> getArrayExpansionSourceCollection(Object value) {
+            if(value == null) {
+                return Optional.empty();
+            }
+            else if(value.getClass().isArray()) {
+                return Optional.of(Arrays.asList((Object[]) value));
+            }
+            else if(value instanceof List<?> list) {
+                return Optional.of(list);
+            }
+            else if(value instanceof Collection<?> collection) {
+                return Optional.of(collection.stream().toList());
+            }
+            else {
+                return Optional.of(List.of(value));
+            }
+        }
+
+
     }
 }

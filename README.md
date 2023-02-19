@@ -10,7 +10,7 @@ A micro-framework for SQL-based applications. Its main features revolve around e
 while supporting useful features.
 In particular:
 - each query lives in its own file
-- different dialects are supported by storing queries for each dialect in a different file
+- different dialects are supported by storing queries for each dialect in a different path
 - a simple text processor allows to dynamically enable/disable portions of a query
 
 ### it.openly.core.io
