@@ -1,10 +1,12 @@
 package it.openly.core.io;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.Objects;
 
 /**
  * A stream capable of calculating a message digest over its data
@@ -14,17 +16,22 @@ import java.security.MessageDigest;
 public class InputStreamWithDigest extends ObservableInputStream implements IStreamWithDigest {
 
 	private final MessageDigest messageDigest;
+
+	/**
+	 * Available only after the stream is closed, represents the value of the digest.
+	 */
+	@Getter
 	private byte[] digestValue = null;
 
-	@SneakyThrows
 	public InputStreamWithDigest(InputStream sourceStream) {
-		super(sourceStream);
-		messageDigest = MessageDigest.getInstance(DEFAULT_DIGEST_ALGORITHM);
+		this(sourceStream, null);
 	}
 
+	@SneakyThrows
 	public InputStreamWithDigest(InputStream sourceStream, MessageDigest messageDigest) {
 		super(sourceStream);
-		this.messageDigest = messageDigest;
+		this.messageDigest = messageDigest != null ? messageDigest : MessageDigest.getInstance(DEFAULT_DIGEST_ALGORITHM);
+		Objects.requireNonNull(this.messageDigest, "messageDigest cannot be null. The argument was null and no default digest algorithm was found.");
 	}
 	
 	@Override
@@ -32,23 +39,14 @@ public class InputStreamWithDigest extends ObservableInputStream implements IStr
 		return messageDigest;
 	}
 	
-	/**
-	 * Available only after the stream is closed, represents the value of the digest.
-	 * @return The digest
-	 */
-	@Override
-	public byte[] getDigestValue() {
-		return digestValue;
-	}
-	
-	private synchronized void updateDigest(byte[] b, int off, int len) {
-		if(messageDigest != null) {
+	private void updateDigest(byte[] b, int off, int len) {
+		synchronized(messageDigest) {
 			messageDigest.update(b, off, len);
 		}
 	}
 	
-	private synchronized void calculateDigestValue() {
-		if(messageDigest != null) {
+	private void calculateDigestValue() {
+		synchronized(messageDigest) {
 			digestValue = messageDigest.digest();
 		}
 	}

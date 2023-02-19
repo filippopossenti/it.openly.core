@@ -1,10 +1,12 @@
 package it.openly.core.io;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+import java.util.Objects;
 
 /**
  * An output stream capable of calculating the digest of written data.
@@ -13,7 +15,13 @@ import java.security.MessageDigest;
  */
 public class OutputStreamWithDigest extends ObservableOutputStream implements IStreamWithDigest {
 
+	@Getter
 	private final MessageDigest messageDigest;
+
+	/**
+	 * Available only after the stream is closed, represents the value of the digest.
+	 */
+	@Getter
 	private byte[] digestValue = null;
 
 	public OutputStreamWithDigest(OutputStream destStream) {
@@ -24,28 +32,19 @@ public class OutputStreamWithDigest extends ObservableOutputStream implements IS
 	public OutputStreamWithDigest(OutputStream destStream, MessageDigest messageDigest) {
 		super(destStream);
 		this.messageDigest = messageDigest != null ? messageDigest : MessageDigest.getInstance(DEFAULT_DIGEST_ALGORITHM);
+		Objects.requireNonNull(this.messageDigest, "messageDigest cannot be null. The argument was null and no default digest algorithm was found.");
 	}
 	
-	private synchronized void updateDigest(byte[] b, int off, int len) {
-		if(messageDigest != null) {
+	private void updateDigest(byte[] b, int off, int len) {
+		synchronized(messageDigest) {
 			messageDigest.update(b, off, len);
 		}
 	}
 	
-	private synchronized void calculateDigestValue() {
-		if(messageDigest != null) {
+	private void calculateDigestValue() {
+		synchronized(messageDigest) {
 			digestValue = messageDigest.digest();
 		}
-	}
-	
-	@Override
-	public byte[] getDigestValue() {
-		return digestValue;
-	}
-
-	@Override
-	public MessageDigest getMessageDigest() {
-		return messageDigest;
 	}
 	
 	@Override
