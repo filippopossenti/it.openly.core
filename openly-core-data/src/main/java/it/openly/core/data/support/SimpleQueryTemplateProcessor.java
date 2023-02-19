@@ -126,17 +126,16 @@ public class SimpleQueryTemplateProcessor implements ITemplateProcessor {
         BufferedReader rdr = new BufferedReader(new StringReader(instr));
         StringWriter wtr = new StringWriter();
         String line;
-        boolean line1 = false;
+        boolean line1 = true;
         while ((line = rdr.readLine()) != null) {
             String l = line.trim();
-            if(!line1) {
-                line1 = true;
-            }
-            else {
-                wtr.write(System.lineSeparator());
-            }
-            if (!"".equals(l))
+            if (!"".equals(l)) {
+                if(!line1) {
+                    wtr.write(System.lineSeparator());
+                }
+                line1 = false;
                 wtr.write(line);
+            }
         }
         return wtr.toString();
     }
@@ -161,7 +160,7 @@ public class SimpleQueryTemplateProcessor implements ITemplateProcessor {
 
         void evaluateInjection(Map<String, Object> context) {
             int remaining = MAX_REPLACEMENTS;
-            while(remaining-- >= 0) {
+            while(--remaining >= 0) {
                 int start = result.indexOf(COMMENT_START_INJECT);
                 if (start < 0) {
                     return;
@@ -175,8 +174,15 @@ public class SimpleQueryTemplateProcessor implements ITemplateProcessor {
         }
 
         void evaluateArrayExpansion(Map<String, Object> context) {
+            if(!result.contains(NAMED_PARAMETER_START)) {
+                return;
+            }
             Map<String, Object> ctx = new HashMap<>();
-            context.forEach((key, value) -> getArrayExpansionSourceCollection(value).ifPresent(list -> applyArrayExpansionReplacement(ctx, key, list)));
+            context.forEach((key, value) -> {
+                if(result.contains(NAMED_PARAMETER_START + key)) {
+                    getArrayExpansionSourceCollection(value).ifPresent(list -> applyArrayExpansionReplacement(ctx, key, list));
+                }
+            });
             context.putAll(ctx);
         }
 

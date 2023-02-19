@@ -264,4 +264,45 @@ public class QueryTest {
             }
         }
     }
+
+    @Test
+    @DisplayName("constructor: the namedParameterJdbcTemplate argument is required")
+    void testConstructorRequiresNPJT() {
+        // Given: the jdbcTemplate is null
+        NamedParameterJdbcTemplate jdbcTemplate = null;
+        String sqlTemplate = "some query";
+        Map<String, Object> context = new HashMap<>();
+
+        // When: I try to create the query object
+        // Then: an exception is thrown
+        assertThrows(NullPointerException.class, () -> new Query(jdbcTemplate, sqlTemplate, context), "An exception was expected to be thrown");
+    }
+
+    @Test
+    @DisplayName("constructor: the sqlTemplate argument is required")
+    void testConstructorRequiresQT() {
+        // Given: the jdbcTemplate is null
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sqlTemplate = null;
+        Map<String, Object> context = new HashMap<>();
+
+        // When: I try to create the query object
+        // Then: an exception is thrown
+        assertThrows(NullPointerException.class, () -> new Query(jdbcTemplate, sqlTemplate, context), "An exception was expected to be thrown");
+    }
+
+    @Test
+    @DisplayName("constructor: the context argument is NOT required")
+    void testConstructorDoesNotRequireContext() {
+        // Given: the jdbcTemplate is null
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        String sqlTemplate = "select * from \"cool_people\" where first_name like :name_like order by idx";
+        Map<String, Object> context = null;
+
+        // When: I try to create the query object
+        new Query(jdbcTemplate, sqlTemplate, context);
+        // Then: no exception is thrown
+        assertTrue(true);   // if we get here we automatically succeeded
+    }
+
 }

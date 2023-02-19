@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,6 +70,26 @@ class DefaultQueryResourceLoaderTest {
 
         // Then: the generic query will be loaded correctly
         assertEquals(expectedQueryText, actual);
+    }
+
+    @Test
+    @DisplayName("Attempting to load a query without providing a DataSource fails as the argument is needed to detect database-specfic queries")
+    void testLoadQueryNullDataSource() {
+        DefaultQueryResourceLoader defaultQueryResourceLoader = new DefaultQueryResourceLoader(resourceResolver, dbProductDetector, UUID.randomUUID().toString());
+
+        // When: I try to load the generic query
+        // Then: an exception is thrown
+        assertThrows(NullPointerException.class, () -> defaultQueryResourceLoader.loadQuery(null, "somerandomquery"), "Expected an exception to be thrown due to invalid argument but no exception was thrown");
+    }
+
+    @Test
+    @DisplayName("Attempting to load a query without providing the query fails as the argument is required")
+    void testLoadQueryNullQueryName() {
+        DefaultQueryResourceLoader defaultQueryResourceLoader = new DefaultQueryResourceLoader(resourceResolver, dbProductDetector, UUID.randomUUID().toString());
+
+        // When: I try to load the generic query
+        // Then: an exception is thrown
+        assertThrows(NullPointerException.class, () -> defaultQueryResourceLoader.loadQuery(dataSource, null), "Expected an exception to be thrown due to invalid argument but no exception was thrown");
     }
 
 }

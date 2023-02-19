@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static it.openly.core.utils.Shortcuts.dt;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionTest {
@@ -126,6 +125,18 @@ class TransactionTest {
         assertEquals(1, affectedRows);
         assertEquals(rating, ((Number)changedValue.get("RATING")).doubleValue());
         assertEquals(expectedRating, ((Number)actualValue.get("RATING")).doubleValue());
+    }
+
+    @Test
+    @DisplayName("constructor: the transaction constructor requires a DataSource to be provided")
+    void testConstructorRequiresDataSource() {
+        // Given: the dataSource is null
+        DataSource dataSource = null;
+
+        // When: I try to create an instance of a Transaction
+        // Then: an exception is thrown
+        assertThrows(NullPointerException.class, () -> new Transaction(dataSource), "An exception was expected to be thrown");
+
     }
 
 }

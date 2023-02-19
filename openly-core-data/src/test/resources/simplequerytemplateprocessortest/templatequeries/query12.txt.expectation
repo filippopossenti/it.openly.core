@@ -1,0 +1,6 @@
+select
+    1
+from
+    mytable
+where
+    col in (:key18_0, :key18_1, :key18_2)

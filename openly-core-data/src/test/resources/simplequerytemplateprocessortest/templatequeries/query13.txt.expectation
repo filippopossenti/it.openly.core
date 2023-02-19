@@ -1,0 +1,6 @@
+select
+    1
+from
+    mytable
+where
+    col in (:key19_0, :key19_1, :key19_2, :key19_3)
