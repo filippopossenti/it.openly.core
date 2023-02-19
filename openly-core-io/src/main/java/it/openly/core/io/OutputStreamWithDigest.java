@@ -13,7 +13,7 @@ import java.security.MessageDigest;
  */
 public class OutputStreamWithDigest extends ObservableOutputStream implements IStreamWithDigest {
 
-	private MessageDigest messageDigest;
+	private final MessageDigest messageDigest;
 	private byte[] digestValue = null;
 
 	public OutputStreamWithDigest(OutputStream destStream) {

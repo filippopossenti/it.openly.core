@@ -1,9 +1,9 @@
 package it.openly.core.patterns.observer;
 
 public class StateInfo {
-	private int code;
-	private Object object;
-	private Exception exception;
+	private final int code;
+	private final Object object;
+	private final Exception exception;
 	
 	public StateInfo(int code, Object object, Exception exception) {
 		this.code = code;

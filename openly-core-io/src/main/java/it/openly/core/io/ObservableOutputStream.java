@@ -1,7 +1,7 @@
 package it.openly.core.io;
 
 import it.openly.core.patterns.observer.IObserver;
-import it.openly.core.patterns.observer.StateInfo;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,9 +15,10 @@ import java.util.List;
  */
 public class ObservableOutputStream extends OutputStream implements IObservableStream, IStreamWithParent<OutputStream> {
 
-	private OutputStream destStream;
+	private final OutputStream destStream;
 	private long position = 0;
-	private List<IObserver> observers = new ArrayList<>();
+	@Getter
+	private final List<IObserver> observers = new ArrayList<>();
 
 	public ObservableOutputStream(OutputStream destStream) {
 		super();
@@ -61,32 +62,6 @@ public class ObservableOutputStream extends OutputStream implements IObservableS
 	@Override
 	public synchronized long getPosition() {
 		return position;
-	}
-
-	@Override
-	public synchronized void attachObserver(IObserver observer) {
-		if (!observers.contains(observer)) {
-			observers.add(observer);
-		}
-
-	}
-
-	@Override
-	public synchronized void detachObserver(IObserver observer) {
-		observers.remove(observer);
-
-	}
-
-	@Override
-	public synchronized void notifyObservers() {
-		notifyObservers(new StateInfo(0, this, null));
-	}
-
-	@Override
-	public synchronized void notifyObservers(StateInfo optionalState) {
-		for (IObserver observer : observers) {
-			observer.update(this, optionalState);
-		}
 	}
 
 	@Override
