@@ -32,6 +32,8 @@ import java.util.*;
  *     -- key2:value_desc -- mycol2 desc, <br/>
  *     id desc
  *     -- =key3 -- <br/>
+ * -- page_size -- limit :page_size
+ * -- page_offset -- offset :page_offset
  * </code>
  * <br/>
  * Supported processing features examples:<br/>
