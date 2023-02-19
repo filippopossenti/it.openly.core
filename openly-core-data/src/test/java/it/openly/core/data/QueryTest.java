@@ -20,8 +20,7 @@ import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.util.*;
 
-import static it.openly.core.test.TestUtils.dt;
-import static it.openly.core.test.TestUtils.map;
+import static it.openly.core.utils.Shortcuts.dt;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
@@ -53,10 +52,10 @@ public class QueryTest {
         String insert_sql = IOUtils.toString(resolver.getResource("queries/hsql/insert.sql").getInputStream(), Charset.defaultCharset());
         NamedParameterJdbcTemplate jt = new NamedParameterJdbcTemplate(dataSource);
         jt.execute(objects_create_sql, PreparedStatement::execute);
-        people.add(map("IDX", 1, "FIRST_NAME", "John", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", dt("2019-08-19"), "RATING", 5));
-        people.add(map("IDX", 2, "FIRST_NAME", "Jane", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", dt("2018-08-19"), "RATING", 6));
-        people.add(map("IDX", 3, "FIRST_NAME", "Mary", "LAST_NAME", "Doherty", "SUBSCRIPTION_DATE", dt("2018-01-27"), "RATING", 4));
-        people.add(map("IDX", 4, "FIRST_NAME", "Mark", "LAST_NAME", "Dundall", "SUBSCRIPTION_DATE", dt("2017-12-18"), "RATING", 6.5));
+        people.add(Map.of("IDX", 1, "FIRST_NAME", "John", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", dt("2019-08-19"), "RATING", 5));
+        people.add(Map.of("IDX", 2, "FIRST_NAME", "Jane", "LAST_NAME", "Doe", "SUBSCRIPTION_DATE", dt("2018-08-19"), "RATING", 6));
+        people.add(Map.of("IDX", 3, "FIRST_NAME", "Mary", "LAST_NAME", "Doherty", "SUBSCRIPTION_DATE", dt("2018-01-27"), "RATING", 4));
+        people.add(Map.of("IDX", 4, "FIRST_NAME", "Mark", "LAST_NAME", "Dundall", "SUBSCRIPTION_DATE", dt("2017-12-18"), "RATING", 6.5));
         jt.update(insert_sql, people.get(0));
         jt.update(insert_sql, people.get(1));
         jt.update(insert_sql, people.get(2));
